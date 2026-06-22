@@ -1,0 +1,121 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+  <!-- ================= HEADER ================= -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">
+        Special Promotions
+      </h1>
+      <p class="text-gray-500 mt-1">
+        Exclusive deals, discounts & limited-time offers
+      </p>
+    </div>
+
+    <!-- ================= SORT ================= -->
+    <form method="GET">
+      <select name="sort"
+              onchange="this.form.submit()"
+              class="border rounded-lg p-3">
+
+        <option value="">Sort By</option>
+        <option value="highest_discount" {% if sort == "highest_discount" %}selected{% endif %}>
+          Highest Discount
+        </option>
+        <option value="ending_soon" {% if sort == "ending_soon" %}selected{% endif %}>
+          Ending Soon
+        </option>
+        <option value="newest" {% if sort == "newest" %}selected{% endif %}>
+          Newest
+        </option>
+
+      </select>
+    </form>
+
+  </div>
+
+  <!-- ================= PROMOTIONS GRID ================= -->
+  {% if promotions %}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for promo in promotions %}
+    <div class="group bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden">
+
+      <!-- ================= IMAGE ================= -->
+      <div class="relative h-56 overflow-hidden bg-gray-100">
+
+        {% if promo.image %}
+          <img src="{{ promo.image.url }}"
+               class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        {% else %}
+          <div class="w-full h-full flex items-center justify-center text-gray-400">
+            No Image
+          </div>
+        {% endif %}
+
+        <!-- DISCOUNT BADGE -->
+        <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full font-bold">
+          {{ promo.discount_percentage }}% OFF
+        </span>
+
+      </div>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="p-5 space-y-3">
+
+        <!-- TITLE -->
+        <h3 class="text-lg font-bold text-gray-900 line-clamp-1">
+          {{ promo.title }}
+        </h3>
+
+        <!-- DATE INFO -->
+        <p class="text-xs text-gray-500">
+          Valid until: {{ promo.end_date|date:"d M Y" }}
+        </p>
+
+        <!-- PROGRESS / STATUS -->
+        <div class="text-sm">
+          <span class="font-semibold text-green-600">
+            Active Offer
+          </span>
+        </div>
+
+        <!-- BUTTON -->
+        <button class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
+          View Deal
+        </button>
+
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
+  {% else %}
+
+  <!-- ================= EMPTY STATE ================= -->
+  <div class="text-center py-20">
+
+    <h2 class="text-2xl font-bold text-gray-700">
+      No Active Promotions
+    </h2>
+
+    <p class="text-gray-500 mt-2">
+      Please check back later for exciting deals
+    </p>
+
+  </div>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

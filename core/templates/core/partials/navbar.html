@@ -1,0 +1,212 @@
+<header class="bg-white shadow-sm sticky top-0 z-50 border-b">
+
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
+        <!-- =====================================================
+        LOGO
+        ===================================================== -->
+        <a href="/" class="flex items-center space-x-2">
+            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">
+                🍕
+            </div>
+            <span class="text-xl font-extrabold text-red-600">PizzaHub</span>
+        </a>
+
+
+        <!-- =====================================================
+        DESKTOP MENU
+        ===================================================== -->
+        <nav class="hidden md:flex space-x-8 font-medium text-gray-700">
+
+            <a href="/" class="hover:text-red-600 transition">Home</a>
+
+            <a href="/menu/" class="hover:text-red-600 transition">Menu</a>
+
+            <!-- =====================================================
+            DEALS DROPDOWN (PRO LEVEL)
+            ===================================================== -->
+            <div class="relative group">
+
+                <a href="/deals/"
+                   class="hover:text-red-600 transition flex items-center space-x-1">
+                    <span>Deals</span>
+                    <span class="text-xs">⌄</span>
+                </a>
+
+                <!-- DROPDOWN -->
+                <div class="absolute left-0 mt-2 w-56 bg-white border rounded-xl shadow-xl
+                            opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                            transition-all duration-200 z-50 overflow-hidden">
+
+                    <a href="{% url 'deals:featured-deals' %}"
+                       class="block px-4 py-3 text-sm hover:bg-gray-100">
+                        ⭐ Featured Deals
+                    </a>
+
+                    <a href="{% url 'deals:flash-deals' %}"
+                       class="block px-4 py-3 text-sm hover:bg-gray-100">
+                        🔥 Flash Deals
+                    </a>
+
+                    <a href="{% url 'deals:home-deals' %}"
+                       class="block px-4 py-3 text-sm hover:bg-gray-100">
+                        🏠 Home Deals
+                    </a>
+
+                    <div class="border-t"></div>
+
+                    <a href="{% url 'deals:deal-search' %}"
+                       class="block px-4 py-3 text-sm hover:bg-gray-100">
+                        🔍 Search Deals
+                    </a>
+
+                </div>
+            </div>
+
+            <a href="/about/" class="hover:text-red-600 transition">About</a>
+
+            <a href="/contact/" class="hover:text-red-600 transition">Contact</a>
+
+        </nav>
+
+
+        <!-- =====================================================
+        RIGHT SIDE
+        ===================================================== -->
+        <div class="flex items-center space-x-4">
+
+            <!-- SEARCH -->
+            <div class="hidden md:block">
+                <input type="text"
+                    placeholder="Search pizza..."
+                    class="w-48 px-4 py-2 text-sm border rounded-full focus:outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+
+            <!-- CART -->
+            <a href="/cart/" class="relative">
+                <div class="text-2xl">🛒</div>
+
+                {% if cart_count %}
+                <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                    {{ cart_count }}
+                </span>
+                {% endif %}
+            </a>
+
+
+            <!-- =====================================================
+            USER SECTION
+            ===================================================== -->
+            <div class="relative">
+
+                {% if user.is_authenticated %}
+
+                <button id="userBtn"
+                    class="text-sm font-medium text-gray-700 hover:text-red-600 flex items-center space-x-1">
+                    <span>{{ user.username }}</span>
+                    <span>⌄</span>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div id="userDropdown"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
+
+                    <a href="/dashboard/" class="block px-4 py-2 text-sm hover:bg-gray-100">Dashboard</a>
+                    <a href="/accounts/profile/" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
+                    <a href="/orders/" class="block px-4 py-2 text-sm hover:bg-gray-100">My Orders</a>
+                    <a href="/cart/" class="block px-4 py-2 text-sm hover:bg-gray-100">My Cart</a>
+
+                    <div class="border-t"></div>
+
+                    <a href="/accounts/logout/" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                        Logout
+                    </a>
+
+                </div>
+
+                {% else %}
+
+                <a href="/accounts/login/"
+                    class="text-sm font-medium text-gray-700 hover:text-red-600">
+                    Login
+                </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- MOBILE BUTTON -->
+            <button id="menuBtn" class="md:hidden text-2xl">
+                ☰
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+    MOBILE MENU
+    ===================================================== -->
+    <div id="mobileMenu" class="md:hidden hidden border-t px-4 py-3 bg-white">
+
+        <a href="/" class="block py-2 hover:text-red-600">Home</a>
+        <a href="/menu/" class="block py-2 hover:text-red-600">Menu</a>
+
+        <!-- DEALS MOBILE -->
+        <div class="py-2 font-semibold">Deals</div>
+
+        <div class="pl-4 border-l ml-2">
+
+            <a href="{% url 'deals:featured-deals' %}" class="block py-1 text-sm">
+                ⭐ Featured Deals
+            </a>
+
+            <a href="{% url 'deals:flash-deals' %}" class="block py-1 text-sm">
+                🔥 Flash Deals
+            </a>
+
+            <a href="{% url 'deals:home-deals' %}" class="block py-1 text-sm">
+                🏠 Home Deals
+            </a>
+
+            <a href="{% url 'deals:deal-search' %}" class="block py-1 text-sm">
+                🔍 Search Deals
+            </a>
+
+        </div>
+
+        <a href="/about/" class="block py-2 hover:text-red-600">About</a>
+        <a href="/contact/" class="block py-2 hover:text-red-600">Contact</a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= JS ================= -->
+<script>
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+    }
+
+    const userBtn = document.getElementById("userBtn");
+    const userDropdown = document.getElementById("userDropdown");
+
+    if (userBtn && userDropdown) {
+        userBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle("hidden");
+        });
+
+        document.addEventListener("click", () => {
+            userDropdown.classList.add("hidden");
+        });
+    }
+</script>
+

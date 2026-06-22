@@ -1,0 +1,397 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- =========================
+    HERO SECTION
+========================= -->
+<section class="relative bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gray-900 via-zinc-950 to-black text-white overflow-hidden min-h-[85vh] flex items-center">
+    <!-- Ambient Background Glow -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-amber-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-12 gap-12 items-center relative z-10">
+
+        <!-- Left Content -->
+        <div class="md:col-span-7 space-y-6 text-center md:text-left">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 tracking-wide uppercase">
+                🚀 Super Fast Delivery
+            </span>
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+                Fresh & Delicious <br>
+                <span class="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">
+                    Food Delivered
+                </span> Fast
+            </h1>
+
+            <p class="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto md:mx-0 font-normal leading-relaxed">
+                Explore premium quality meals, handcrafted pizzas, and exclusive seasonal offers curated just for your cravings.
+            </p>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <a href="#products"
+                   class="px-8 py-4 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold rounded-xl shadow-lg shadow-yellow-500/20 hover:shadow-xl hover:shadow-yellow-500/30 transform hover:-translate-y-0.5 transition-all duration-200 text-center">
+                    Order Now
+                </a>
+
+                <a href="#categories"
+                   class="px-8 py-4 bg-zinc-900/80 text-zinc-200 font-semibold rounded-xl border border-zinc-800 hover:bg-zinc-800 hover:text-white transform hover:-translate-y-0.5 transition-all duration-200 text-center backdrop-blur-sm">
+                    Explore Menu
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Image Grid/Frame -->
+        <div class="md:col-span-5 relative flex justify-center">
+            <div class="relative group w-full max-w-[420px] md:max-w-none">
+                <!-- Decorative Outer Ring -->
+                <div class="absolute -inset-1.5 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                
+                <!-- Main Image -->
+                <div class="relative overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl aspect-[4/5] md:aspect-square lg:aspect-[4/5]">
+                    <img src="https://images.unsplash.com/photo-1601924582970-9238bcb495d9"
+                         alt="Premium Gourmet Food"
+                         class="w-full h-full object-cover transform scale-102 group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                </div>
+
+                <!-- Floating Badge -->
+                <div class="absolute -bottom-6 -left-6 bg-zinc-900/90 border border-zinc-800 p-4 rounded-2xl shadow-xl flex items-center gap-3 backdrop-blur-md hidden sm:flex animate-bounce-slow">
+                    <div class="p-2.5 bg-yellow-400 rounded-xl text-black">
+                        🔥
+                    </div>
+                    <div>
+                        <p class="text-xs text-zinc-400 font-medium">Trending Item</p>
+                        <p class="text-sm font-bold text-white">Spicy Pepperoni</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+    CATEGORIES SECTION
+========================= -->
+<section id="categories" class="py-20 bg-zinc-50 border-y border-zinc-200">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="text-center max-w-xl mx-auto mb-12">
+            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900">
+                Shop by Category
+            </h2>
+            <p class="text-zinc-500 mt-2">Find exactly what you are craving from our organized menu</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for category in categories %}
+            <a href="{% url 'menu:category_detail' category.slug %}"
+               class="group relative bg-white rounded-2xl border border-zinc-200/80 p-5 text-center shadow-sm hover:shadow-xl hover:border-transparent transition-all duration-300 flex flex-col items-center">
+                
+                <!-- Decorative Top Border Feature -->
+                <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="relative p-1 bg-zinc-50 rounded-full group-hover:bg-amber-50 transition-colors duration-300">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}"
+                             alt="{{ category.name }}"
+                             class="w-20 h-20 object-cover rounded-full shadow-inner transform group-hover:scale-105 transition duration-300">
+                    {% else %}
+                        <div class="w-20 h-20 bg-zinc-200 rounded-full flex items-center justify-center text-zinc-400 text-2xl font-bold">
+                            🍽️
+                        </div>
+                    {% endif %}
+                </div>
+
+                <h3 class="mt-4 font-bold text-zinc-800 group-hover:text-amber-600 transition-colors duration-200 text-base md:text-lg">
+                    {{ category.name }}
+                </h3>
+            </a>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+    FEATURED PRODUCTS
+========================= -->
+<section id="products" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-600">
+                    Chef's Selection
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-zinc-900 mt-1">
+                    Featured Products
+                </h2>
+            </div>
+
+            <a href="#categories"
+               class="text-sm font-semibold text-zinc-900 hover:text-amber-600 transition inline-flex items-center gap-1 group">
+                View Entire Menu
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+
+        </div>
+
+        <!-- PRODUCTS GRID -->
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+
+            {% for product in featured_products %}
+
+            <div class="group bg-white rounded-2xl border border-zinc-200 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col">
+
+                <!-- IMAGE -->
+                <div class="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+
+                    <img src="{{ product.thumbnail.url }}"
+                         alt="{{ product.name }}"
+                         class="h-full w-full object-cover group-hover:scale-105 transition duration-500">
+
+                    <!-- Popular badge -->
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase bg-white/90 text-zinc-900 shadow-sm">
+                        ⭐ Popular
+                    </span>
+
+                    <!-- 🔥 DISCOUNT BADGE (FINAL SAFE FIX) -->
+                    {% if product.discount_percent and product.discount_percent > 0 %}
+                    <span class="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
+                        🔥 {{ product.discount_percent }}% OFF
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                <!-- CONTENT -->
+                <div class="p-5 flex flex-col flex-grow">
+
+                    {% if product.category %}
+                    <span class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">
+                        {{ product.category.name }}
+                    </span>
+                    {% endif %}
+
+                    <h3 class="font-bold text-zinc-900 text-lg group-hover:text-amber-600 transition">
+                        {{ product.name }}
+                    </h3>
+
+                    <p class="text-zinc-500 text-sm mt-1.5 line-clamp-2 flex-grow">
+                        {{ product.short_description|default:"Freshly prepared premium item." }}
+                    </p>
+
+                    <!-- PRICE + BUTTON -->
+                    <div class="mt-5 pt-4 border-t border-zinc-100 flex justify-between items-center">
+
+                        <div class="flex flex-col">
+                            <span class="text-xs text-zinc-400 uppercase">Price</span>
+                            <span class="text-lg font-black text-zinc-950">
+                                Rs {{ product.final_price }}
+                            </span>
+                        </div>
+
+                        <a href="{% url 'menu:product_detail' product.slug %}"
+                           class="inline-flex items-center justify-center px-4 py-2 text-sm font-bold bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition">
+                            View
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+<!-- =========================
+    PROMOTIONS SECTION
+========================= -->
+<section class="py-20 bg-gradient-to-b from-amber-50/70 to-orange-50/40 border-y border-amber-100">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <!-- Section Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-orange-600">
+                    Limited Offers
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 mt-1">
+                    Special Promotions
+                </h2>
+            </div>
+        </div>
+
+        <!-- Promotions Grid -->
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
+            {% for promo in promotions %}
+            <div class="group bg-white rounded-2xl border border-zinc-200 overflow-hidden hover:shadow-xl hover:border-zinc-300/60 transition-all duration-300 flex flex-col">
+
+                <!-- Image -->
+                <div class="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+                    <img src="{{ promo.image.url }}"
+                         alt="{{ promo.title }}"
+                         class="h-full w-full object-cover transform group-hover:scale-105 transition duration-500">
+
+                    <!-- Discount Badge -->
+                    <span class="absolute top-3 left-3 px-3 py-1 rounded-md text-xs font-bold uppercase bg-red-500 text-white shadow-sm">
+                        {{ promo.discount_percentage }}% OFF
+                    </span>
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 flex flex-col flex-grow">
+
+                    <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider mb-1">
+                        Exclusive Deal
+                    </span>
+
+                    <h3 class="font-bold text-zinc-900 text-lg group-hover:text-orange-600 transition-colors duration-200">
+                        {{ promo.title }}
+                    </h3>
+
+                    <p class="text-zinc-500 text-sm mt-2 flex-grow leading-relaxed">
+                        Claim this exclusive voucher during checkout. Valid for a limited time only.
+                    </p>
+
+                    {% if promo.coupon_code %}
+                    <div class="mt-4 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3">
+                        <span class="block text-xs font-semibold text-zinc-500 uppercase">
+                            Coupon Code
+                        </span>
+                        <span class="text-orange-600 font-black text-lg">
+                            {{ promo.coupon_code }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Button -->
+                    <div class="mt-5 pt-4 border-t border-zinc-100">
+<a href="{% url 'menu:promotion_detail' promo.pk %}"
+   class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-bold bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 shadow-sm hover:shadow transition duration-200">
+    View Offer
+</a>                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+```
+
+<!-- =========================
+    LATEST PRODUCTS
+========================= -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-600">Fresh Additions</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 mt-1">
+                Latest Additions
+            </h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+            {% for product in latest_products %}
+            <div class="group bg-zinc-50/50 rounded-2xl border border-zinc-200/60 overflow-hidden hover:bg-white hover:shadow-xl hover:border-zinc-300 transition-all duration-300 flex flex-col">
+
+                <div class="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+                    <img src="{{ product.thumbnail.url }}"
+                         alt="{{ product.name }}"
+                         class="h-full w-full object-cover transform group-hover:scale-105 transition duration-500">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase bg-zinc-900 text-white shadow-sm">
+                        New ✨
+                    </span>
+                </div>
+
+                <div class="p-5 flex flex-col flex-grow">
+                    <!-- Added Category Label here -->
+                    {% if product.category %}
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">
+                        {{ product.category.name }}
+                    </span>
+                    {% endif %}
+
+                    <h3 class="font-bold text-zinc-900 text-base md:text-lg group-hover:text-amber-600 transition-colors line-clamp-1">
+                        {{ product.name }}
+                    </h3>
+
+                    <div class="mt-4 pt-3 border-t border-zinc-200/60 flex items-center justify-between">
+                        <span class="text-zinc-900 font-extrabold text-base">
+                            Rs {{ product.final_price }}
+                        </span>
+                        
+                        <a href="{% url 'menu:product_detail' product.slug %}"
+                           class="text-xs font-bold text-amber-600 hover:text-amber-700 transition">
+                            Details →
+                        </a>
+                    </div>
+
+                    <a href="{% url 'menu:product_detail' product.slug %}"
+                       class="block mt-4 text-center text-sm font-bold bg-white border border-zinc-300 text-zinc-800 py-2.5 rounded-xl hover:bg-zinc-950 hover:text-white hover:border-transparent transition-all duration-200">
+                        View Product
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================
+    FOOTER CTA
+========================= -->
+<section class="relative py-20 bg-zinc-950 text-white text-center overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-yellow-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-6 relative z-10 space-y-6">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-none">
+            Hungry? Order Now in Seconds 🍕
+        </h2>
+
+        <p class="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto font-normal">
+            Experience blazing fast delivery, premium artisanal ingredients, and unbeatable pricing values.
+        </p>
+
+        <div class="pt-4">
+            <a href="#products"
+               class="inline-block px-8 py-4 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-extrabold rounded-xl shadow-lg shadow-yellow-500/10 hover:shadow-xl hover:shadow-yellow-500/20 transform hover:-translate-y-0.5 transition duration-200">
+                Browse Full Menu
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Utility Styles for Slow Animations -->
+<style>
+    @keyframes bounceSlow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    .animate-bounce-slow {
+        animation: bounceSlow 3.5s infinite ease-in-out;
+    }
+</style>
+
+{% endblock %}

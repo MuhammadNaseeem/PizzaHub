@@ -1,0 +1,211 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100">
+
+<!-- ================= HERO ================= -->
+<section class="relative overflow-hidden bg-black text-white py-20">
+
+    <div class="absolute inset-0 opacity-40 bg-cover bg-center"
+         style="background-image:url('https://images.unsplash.com/photo-1601924582970-9238bcb495d9');">
+    </div>
+
+    <div class="relative max-w-6xl mx-auto px-6 text-center">
+
+        <h1 class="text-5xl font-extrabold tracking-tight">
+            🔥 Hot Pizza Deals
+        </h1>
+
+        <p class="text-gray-300 mt-4 text-lg">
+            Limited-time offers. Real-time discounts. Grab before they disappear.
+        </p>
+
+        <div class="mt-6 flex justify-center gap-3 flex-wrap">
+            <span class="bg-red-600 px-4 py-2 rounded-full text-sm font-bold animate-pulse">
+                🔴 LIVE OFFERS
+            </span>
+
+            <span class="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold">
+                ⚡ Updated in real-time
+            </span>
+        </div>
+
+    </div>
+</section>
+
+<!-- ================= FILTERS ================= -->
+<section class="max-w-6xl mx-auto px-6 mt-10">
+
+    <div class="flex flex-wrap justify-center gap-3">
+
+        <a href="?" class="px-4 py-2 bg-white rounded-full shadow hover:shadow-md transition text-sm">
+            All Deals
+        </a>
+
+        <a href="?featured=true" class="px-4 py-2 bg-green-50 text-green-700 rounded-full shadow hover:shadow-md transition text-sm">
+            ⭐ Featured
+        </a>
+
+        <a href="?flash=true" class="px-4 py-2 bg-red-50 text-red-600 rounded-full shadow hover:shadow-md transition text-sm">
+            🔥 Flash Sale
+        </a>
+
+        <a href="?free_delivery=true" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-full shadow hover:shadow-md transition text-sm">
+            🚚 Free Delivery
+        </a>
+
+    </div>
+</section>
+
+<!-- ================= GRID ================= -->
+<section class="max-w-6xl mx-auto px-6 mt-12">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {% for deal in deals %}
+
+        <div class="group bg-white rounded-2xl shadow-md hover:shadow-2xl transition overflow-hidden">
+
+            <!-- IMAGE -->
+            <div class="relative">
+
+                <img src="{{ deal.banner.url }}"
+                     class="w-full h-56 object-cover group-hover:scale-105 transition duration-300"
+                     alt="{{ deal.title }}">
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+
+                <!-- BADGES -->
+                <div class="absolute top-3 left-3 flex flex-wrap gap-2">
+
+                    {% if deal.is_flash_sale %}
+                    <span class="bg-red-600 text-white px-2 py-1 text-xs rounded-full">
+                        🔥 FLASH
+                    </span>
+                    {% endif %}
+
+                    {% if deal.is_featured %}
+                    <span class="bg-green-600 text-white px-2 py-1 text-xs rounded-full">
+                        ⭐ FEATURED
+                    </span>
+                    {% endif %}
+
+                    {% if deal.free_delivery %}
+                    <span class="bg-blue-600 text-white px-2 py-1 text-xs rounded-full">
+                        🚚 FREE
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                {% if deal.coupon_code %}
+                <div class="absolute top-3 right-3 bg-black/80 text-white px-3 py-1 rounded-full text-xs">
+                    {{ deal.coupon_code }}
+                </div>
+                {% endif %}
+
+                <!-- TITLE -->
+                <div class="absolute bottom-3 left-3 text-white">
+                    <h2 class="font-bold text-lg">{{ deal.title }}</h2>
+                    <p class="text-xs text-gray-200">
+                        {{ deal.short_description|default:"Limited time offer" }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- CONTENT -->
+            <div class="p-5">
+
+                <h3 class="font-semibold text-gray-800 text-lg">
+                    {{ deal.title }}
+                </h3>
+
+                <p class="text-sm text-gray-500 mt-1">
+                    {{ deal.short_description }}
+                </p>
+
+                <!-- PRICING -->
+                <div class="mt-4 flex justify-between items-end">
+
+                    <div>
+
+                        {% if deal.original_price > deal.discounted_price %}
+                        <p class="text-2xl text-gray-700 line-through">
+                            Rs {{ deal.original_price }}
+                        </p>
+                        {% endif %}
+
+                        <p class="text-2xl font-extrabold text-green-600">
+                            Rs {{ deal.discounted_price }}
+                        </p>
+
+                        {% if deal.free_delivery %}
+                        <p class="text-xs text-blue-600 mt-1 font-medium">
+                            🚚 Free Delivery Included
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="text-right">
+
+                        {% if deal.savings > 0 %}
+                        <p class="text-red-600 text-sm font-bold">
+                            Save Rs {{ deal.savings }}
+                        </p>
+                        {% endif %}
+
+                        {% if deal.savings_percentage > 0 %}
+                        <p class="text-green-600 text-xs font-semibold">
+                            {{ deal.savings_percentage }}% OFF
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+                <a href="{% url 'deals:deal-detail' deal.slug %}"
+                   class="mt-5 block text-center bg-black text-white py-3 rounded-xl font-semibold hover:bg-gray-900 transition">
+
+                    Grab Deal 🍕
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-span-full text-center py-20">
+            <h2 class="text-3xl font-bold text-gray-400">No Deals Available 😔</h2>
+            <p class="text-gray-500 mt-3">New offers will appear soon.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- ADD DEAL BUTTON -->
+    <div class="text-center mt-12">
+        <a href="{% url 'deals:deal-create' %}"
+           class="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
+            + Add Deal
+        </a>
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="mt-16 text-center text-gray-500 text-sm py-10">
+    © 2026 Pizza Store • Built with premium UX design
+</footer>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,47 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+    <table class="w-full text-sm">
+
+        <thead class="bg-gray-100 text-left">
+            <tr>
+                <th class="p-3">Name</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Username</th>
+                <th class="p-3">Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for user in customers %}
+        <tr class="border-b hover:bg-gray-50">
+
+            <td class="p-3 font-medium">{{ user.get_full_name|default:user.username }}</td>
+            <td class="p-3">{{ user.email }}</td>
+            <td class="p-3">{{ user.username }}</td>
+
+            <td class="p-3">
+                {% if user.is_active %}
+                    <span class="text-green-600 font-medium">Active</span>
+                {% else %}
+                    <span class="text-red-600 font-medium">Blocked</span>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+

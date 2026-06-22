@@ -1,0 +1,154 @@
+{% extends "core/base.html" %}
+
+{% block title %}Flash Deals{% endblock %}
+
+{% block content %}
+<section class="relative overflow-hidden bg-gradient-to-br from-red-700 via-red-600 to-orange-500">
+
+    <!-- Background Effects -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 h-72 w-72 rounded-full bg-white blur-3xl"></div>
+        <div class="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-yellow-300 blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 py-20">
+
+        <!-- Hero -->
+        <div class="text-center mb-16">
+            <span class="inline-flex items-center rounded-full bg-white/20 px-5 py-2 text-sm font-semibold text-white backdrop-blur">
+                ⚡ Limited Time Offers
+            </span>
+
+            <h1 class="mt-6 text-5xl md:text-7xl font-black text-white">
+                FLASH DEALS
+            </h1>
+
+            <p class="mt-6 max-w-2xl mx-auto text-lg text-red-100">
+                Grab these incredible deals before they're gone.
+                Fresh pizzas, burgers, drinks and combos at unbeatable prices.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<section class="bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+
+        {% if deals %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+            {% for deal in deals %}
+            <div class="group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500">
+
+                <!-- Flash Badge -->
+                <div class="absolute top-4 left-4 z-10">
+                    <span class="bg-red-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse">
+                        ⚡ Flash Deal
+                    </span>
+                </div>
+
+                <!-- Image -->
+                {% if deal.image %}
+                <div class="h-64 overflow-hidden">
+                    <img src="{{ deal.image.url }}"
+                         alt="{{ deal.name }}"
+                         class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                {% else %}
+                <div class="h-64 bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+                    <span class="text-7xl">🍕</span>
+                </div>
+                {% endif %}
+
+                <div class="p-6">
+
+                    <!-- Name -->
+                    <h3 class="text-2xl font-extrabold text-gray-900 mb-3">
+                        {{ deal.name }}
+                    </h3>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 mb-6 line-clamp-3">
+                        {{ deal.description|truncatewords:20 }}
+                    </p>
+
+                    <!-- Pricing -->
+                    <div class="flex items-center justify-between mb-6">
+
+                        <div>
+                            {% if deal.discount_price %}
+                            <span class="text-3xl font-black text-red-600">
+                                Rs {{ deal.discount_price }}
+                            </span>
+
+                            <span class="ml-2 text-gray-400 line-through">
+                                Rs {{ deal.original_price }}
+                            </span>
+                            {% else %}
+                            <span class="text-3xl font-black text-red-600">
+                                Rs {{ deal.price }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        {% if deal.discount_percentage %}
+                        <div class="bg-green-100 text-green-700 px-3 py-2 rounded-xl font-bold">
+                            {{ deal.discount_percentage }}% OFF
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- CTA -->
+                    <a href="{% url 'deal-detail' deal.slug %}"
+                       class="block w-full text-center rounded-2xl bg-gradient-to-r from-red-600 to-orange-500 px-6 py-4 text-white font-bold hover:scale-105 transition transform">
+
+                        View Deal →
+                    </a>
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-24">
+            <div class="text-8xl mb-6">🔥</div>
+
+            <h2 class="text-4xl font-black text-gray-900 mb-4">
+                No Flash Deals Right Now
+            </h2>
+
+            <p class="text-gray-600 text-lg">
+                New limited-time offers will be available soon.
+            </p>
+        </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- Urgency Section -->
+<section class="bg-black py-20">
+    <div class="max-w-5xl mx-auto text-center px-6">
+
+        <div class="text-6xl mb-6">⏰</div>
+
+        <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+            Hurry Before They're Gone!
+        </h2>
+
+        <p class="text-gray-300 text-lg">
+            Flash deals are available for a limited time only.
+            Once the timer ends, the offer disappears.
+        </p>
+
+    </div>
+</section>
+{% endblock %}
+

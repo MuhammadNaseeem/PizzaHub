@@ -1,0 +1,290 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-amber-50 py-10">
+
+<div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+    <!-- LEFT SIDE -->
+    <div class="lg:col-span-4 space-y-6">
+
+        <!-- IMAGE -->
+        <div class="bg-white rounded-3xl overflow-hidden shadow-lg border">
+
+            {% if product.thumbnail %}
+            <img src="{{ product.thumbnail.url }}"
+                 alt="{{ product.name }}"
+                 class="w-full h-[320px] object-cover">
+            {% endif %}
+
+        </div>
+
+        <!-- PRODUCT INFO -->
+        <div class="bg-white rounded-3xl p-6 shadow border">
+
+            <!-- 🔥 DISCOUNT BANNER -->
+            {% if discount_percent %}
+            <div class="mb-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-center py-2 rounded-2xl font-bold shadow-lg animate-pulse">
+                🔥 Save {{ discount_percent }}% OFF on Large Pizza Only!
+            </div>
+            {% endif %}
+
+            <div class="flex items-center justify-between">
+
+                <h1 class="text-3xl font-black text-gray-900">
+                    {{ product.name }}
+                </h1>
+
+                {% if discount_percent %}
+                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-bounce shadow">
+                    {{ discount_percent }}% OFF
+                </span>
+                {% endif %}
+
+            </div>
+
+            <p class="text-gray-500 mt-2">
+                {{ product.short_description }}
+            </p>
+
+            <div class="mt-5 pt-5 border-t flex justify-between">
+
+                <span class="text-gray-500">
+                    Base Price
+                </span>
+
+                <span class="font-black text-2xl">
+                    Rs {{ product.final_price }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- TOTAL BOX -->
+        <div class="bg-black text-white rounded-3xl p-6 shadow-xl">
+
+            <p class="uppercase text-xs tracking-widest text-gray-400">
+                Total Price
+            </p>
+
+            <h2 class="text-4xl font-black mt-2">
+                Rs <span id="totalPrice">{{ product.final_price }}</span>
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="lg:col-span-8">
+
+        <form method="POST"
+              action="{% url 'cart:add_to_cart' product.id %}"
+              id="customForm">
+
+            {% csrf_token %}
+
+            <div class="flex items-center justify-between mb-8">
+
+                <div>
+
+                    <h2 class="text-4xl font-black text-gray-900">
+                        Customize Your Order 🍕
+                    </h2>
+
+                    <p class="text-gray-500 mt-2">
+                        Build your perfect pizza.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% for group in customization %}
+
+            <div class="bg-white rounded-3xl border shadow-sm p-6 mb-6">
+
+                <div class="flex justify-between items-center mb-4">
+
+                    <div>
+
+                        <h3 class="font-bold text-xl">
+                            {{ group.group_name }}
+                        </h3>
+
+                        <p class="text-xs text-gray-400">
+                            Min {{ group.min_select }} | Max {{ group.max_select }}
+                        </p>
+
+                    </div>
+
+                    {% if group.is_required %}
+                    <span class="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">
+                        Required
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+                    {% for option in group.options %}
+
+                    <label class="cursor-pointer option-label">
+
+                        <input
+                            type="{% if group.selection_type == 'single' %}radio{% else %}checkbox{% endif %}"
+                            name="group_{{ group.group_id }}"
+                            value="{{ option.id }}"
+                            data-price="{{ option.price }}"
+                            class="hidden option-input">
+
+                        <div class="option-box border rounded-2xl p-4 text-center transition duration-300 hover:border-amber-500 hover:shadow-md">
+
+                            {% if option.image %}
+                            <img src="{{ option.image.url }}"
+                                 class="w-16 h-16 rounded-xl mx-auto object-cover mb-3">
+                            {% endif %}
+
+                            <h4 class="font-semibold">
+                                {{ option.name }}
+                            </h4>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                + Rs {{ option.price }}
+                            </p>
+
+                        </div>
+
+                    </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-3xl p-6">
+
+                <h3 class="font-bold text-yellow-700">
+                    No customization groups found
+                </h3>
+
+                <p class="text-sm text-yellow-600 mt-2">
+                    Attach ProductCustomizationGroup records from admin panel.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex gap-4 mt-8">
+
+                <button type="submit"
+                        class="flex-1 bg-black hover:bg-gray-900 text-white py-4 rounded-2xl font-bold transition">
+
+                    🛒 Add To Cart
+
+                </button>
+
+                <a href="javascript:history.back()"
+                   class="px-8 py-4 rounded-2xl border hover:bg-gray-50">
+
+                    Back
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- PRICE JS -->
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const basePrice = parseFloat("{{ product.final_price }}");
+
+    function updatePrice() {
+
+        let total = basePrice;
+
+        document.querySelectorAll('.option-input:checked').forEach(input => {
+            total += parseFloat(input.dataset.price || 0);
+        });
+
+        document.getElementById('totalPrice').innerText =
+            total.toFixed(2);
+    }
+
+    document.querySelectorAll('.option-input').forEach(input => {
+
+        input.addEventListener('change', function () {
+
+            if (this.type === "radio") {
+
+                document.querySelectorAll(
+                    `input[name="${this.name}"]`
+                ).forEach(el => {
+
+                    const box = el.closest('label')
+                                  .querySelector('.option-box');
+
+                    box.classList.remove(
+                        'border-amber-500',
+                        'bg-amber-50',
+                        'ring-2',
+                        'ring-amber-300'
+                    );
+                });
+            }
+
+            document.querySelectorAll('.option-input').forEach(el => {
+
+                const box = el.closest('label')
+                              .querySelector('.option-box');
+
+                if (el.checked) {
+                    box.classList.add(
+                        'border-amber-500',
+                        'bg-amber-50',
+                        'ring-2',
+                        'ring-amber-300'
+                    );
+                } else {
+                    box.classList.remove(
+                        'border-amber-500',
+                        'bg-amber-50',
+                        'ring-2',
+                        'ring-amber-300'
+                    );
+                }
+
+            });
+
+            updatePrice();
+
+        });
+
+    });
+
+    updatePrice();
+
+});
+
+</script>
+
+{% endblock %}
+

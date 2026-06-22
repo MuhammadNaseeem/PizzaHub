@@ -1,0 +1,123 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+  <!-- ================= HEADER ================= -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">
+        Featured Products
+      </h1>
+      <p class="text-gray-500 mt-1">
+        Top rated & most loved items from our menu
+      </p>
+    </div>
+
+    <!-- ================= SORT FILTER ================= -->
+    <form method="GET">
+      <select name="sort"
+              onchange="this.form.submit()"
+              class="border rounded-lg p-3">
+        <option value="">Sort By</option>
+        <option value="top_rated" {% if sort == "top_rated" %}selected{% endif %}>Top Rated</option>
+        <option value="popular" {% if sort == "popular" %}selected{% endif %}>Most Popular</option>
+        <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest</option>
+      </select>
+    </form>
+
+  </div>
+
+  <!-- ================= PRODUCTS GRID ================= -->
+  {% if products %}
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+    {% for product in products %}
+    <div class="group bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden">
+
+      <!-- ================= IMAGE ================= -->
+      <div class="relative h-52 overflow-hidden bg-gray-100">
+
+        <img src="{{ product.thumbnail.url }}"
+             class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+
+        <!-- FEATURE BADGE -->
+        <span class="absolute top-3 left-3 bg-black text-white text-xs px-2 py-1 rounded">
+          Featured
+        </span>
+
+      </div>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="p-4 space-y-2">
+
+        <!-- NAME -->
+        <h3 class="font-bold text-gray-900 line-clamp-1">
+          {{ product.name }}
+        </h3>
+
+        <!-- CATEGORY -->
+        <p class="text-xs text-gray-500 uppercase tracking-wide">
+          {{ product.category.name }}
+        </p>
+
+        <!-- RATING -->
+        <div class="flex items-center text-yellow-500 text-sm">
+          ★ {{ product.average_rating|default:"0" }}
+          <span class="text-gray-400 ml-2 text-xs">
+            ({{ product.total_orders }} orders)
+          </span>
+        </div>
+
+        <!-- PRICE -->
+        <div class="flex items-center justify-between">
+
+          <span class="font-bold text-black">
+            Rs {{ product.base_price }}
+          </span>
+
+          {% if product.sale_price %}
+          <span class="text-xs line-through text-gray-400">
+            Rs {{ product.sale_price }}
+          </span>
+          {% endif %}
+
+        </div>
+
+        <!-- BUTTON -->
+        <a href="{% url 'menu:product_detail' product.slug %}"
+           class="block text-center bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
+          View Product
+        </a>
+
+      </div>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
+  {% else %}
+
+  <!-- ================= EMPTY STATE ================= -->
+  <div class="text-center py-20">
+
+    <h2 class="text-2xl font-bold text-gray-700">
+      No Featured Products
+    </h2>
+
+    <p class="text-gray-500 mt-2">
+      Please check back later for updates
+    </p>
+
+  </div>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}

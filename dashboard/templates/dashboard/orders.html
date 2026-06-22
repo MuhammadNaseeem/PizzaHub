@@ -1,0 +1,65 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+
+<!-- FILTER -->
+<form method="GET" class="mb-4">
+
+    <select name="status"
+            class="px-4 py-2 border rounded-lg">
+
+        <option value="">All</option>
+        <option value="Pending">Pending</option>
+        <option value="Preparing">Preparing</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Cancelled">Cancelled</option>
+
+    </select>
+
+    <button class="bg-red-600 text-white px-4 py-2 rounded-lg">
+        Filter
+    </button>
+
+</form>
+
+<!-- TABLE -->
+<div class="bg-white rounded-xl shadow">
+
+<table class="w-full text-sm">
+
+<thead class="bg-gray-100">
+<tr>
+    <th class="p-3">Order</th>
+    <th class="p-3">User</th>
+    <th class="p-3">Total</th>
+    <th class="p-3">Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for order in page_obj %}
+<tr class="border-b">
+
+    <td class="p-3">#{{ order.id }}</td>
+    <td class="p-3">{{ order.user.username }}</td>
+    <td class="p-3">Rs {{ order.total }}</td>
+
+    <td class="p-3">
+        <span class="px-2 py-1 text-xs rounded bg-gray-200">
+            {{ order.status }}
+        </span>
+    </td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

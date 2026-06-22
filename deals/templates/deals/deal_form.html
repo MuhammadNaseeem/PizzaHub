@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 min-h-screen p-6">
+
+<div class="max-w-6xl mx-auto bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
+
+  <!-- HEADER -->
+  <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">
+    🎯 Create Deal
+  </h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- ================= MAIN FORM ================= -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      {% for field in form %}
+        <div class="bg-gray-50 p-3 rounded-xl shadow-sm hover:shadow-md transition">
+
+          <label class="block text-sm font-semibold text-gray-700 mb-1">
+            {{ field.label }}
+          </label>
+
+          <div class="w-full">
+            {{ field }}
+          </div>
+
+          {% if field.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ field.errors }}</p>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- ================= FORMSET ================= -->
+    <div class="mt-10">
+
+      <h3 class="text-xl font-bold text-gray-800 mb-4">
+        📦 Deal Products
+      </h3>
+
+      {{ formset.management_form }}
+
+      <div class="overflow-x-auto rounded-xl shadow-lg border">
+
+        <table class="w-full text-sm">
+
+          <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+            <tr>
+              <th class="p-3">Product</th>
+              <th class="p-3">Quantity</th>
+              <th class="p-3">Discount</th>
+              <th class="p-3">Delete</th>
+            </tr>
+          </thead>
+
+          <tbody class="bg-white">
+
+            {% for form in formset %}
+              <tr class="border-b hover:bg-purple-50 transition">
+
+                <td class="p-2">{{ form.product }}</td>
+                <td class="p-2">{{ form.quantity }}</td>
+                <td class="p-2">{{ form.item_discount }}</td>
+                <td class="p-2 text-center text-red-500 font-bold">
+                  {{ form.DELETE }}
+                </td>
+
+              </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+    <!-- ================= BUTTON ================= -->
+    <div class="mt-10 text-center">
+
+      <button type="submit"
+        class="px-10 py-3 rounded-xl text-white font-bold text-lg
+               bg-gradient-to-r from-green-400 via-blue-500 to-purple-600
+               hover:scale-105 transition transform shadow-xl">
+        🚀 Save Deal
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+</body>
+</html>

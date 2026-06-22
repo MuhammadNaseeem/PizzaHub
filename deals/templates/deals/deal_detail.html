@@ -1,0 +1,269 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
+
+```
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+    <div class="grid lg:grid-cols-3 gap-10">
+
+        <!-- LEFT CONTENT -->
+        <div class="lg:col-span-2">
+
+            <!-- IMAGE -->
+<!-- IMAGE -->
+<div class="bg-white rounded-3xl overflow-hidden shadow-xl">
+
+    {% if deal.banner %}
+        <img src="{{ deal.banner.url }}"
+             alt="{{ deal.title }}"
+             class="w-full h-[500px] object-cover">
+    {% else %}
+        <img src="{% static 'images/default-deal.jpg' %}"
+             alt="Default Deal"
+             class="w-full h-[500px] object-cover">
+    {% endif %}
+
+</div>
+
+
+            <!-- DEAL INFO -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+                <div class="flex flex-wrap gap-3 mb-5">
+
+                    {% if deal.is_flash_sale %}
+                    <span class="bg-red-600 text-white px-4 py-2 rounded-full font-bold">
+                        🔥 FLASH SALE
+                    </span>
+                    {% endif %}
+
+                    {% if deal.is_featured %}
+                    <span class="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold">
+                        ⭐ FEATURED
+                    </span>
+                    {% endif %}
+
+                    {% if deal.free_delivery %}
+                    <span class="bg-green-600 text-white px-4 py-2 rounded-full font-bold">
+                        🚚 FREE DELIVERY
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                <h1 class="text-5xl font-black text-gray-900">
+                    {{ deal.title }}
+                </h1>
+
+                <p class="mt-4 text-lg text-gray-600">
+                    {{ deal.short_description }}
+                </p>
+
+                <!-- PRICE SECTION -->
+                <div class="mt-10 bg-gradient-to-r from-red-50 to-orange-50 rounded-3xl p-8 border">
+
+                    <p class="text-gray-500 font-semibold uppercase">
+                        Original Price
+                    </p>
+
+                    <div class="text-5xl text-gray-400 line-through font-bold mt-2">
+                        Rs {{ deal.original_price }}
+                    </div>
+
+                    <p class="mt-6 text-green-600 font-bold uppercase">
+                        Deal Price
+                    </p>
+
+                    <div class="text-7xl font-black text-red-600 mt-2">
+                        Rs {{ deal.discounted_price }}
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-6">
+
+                        <span class="bg-red-600 text-white px-5 py-3 rounded-full font-bold">
+                            {{ deal.savings_percentage|floatformat:0 }}% OFF
+                        </span>
+
+                        <span class="bg-green-100 text-green-700 px-5 py-3 rounded-full font-bold">
+                            Save Rs {{ deal.savings }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- INCLUDED PRODUCTS -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+                <h2 class="text-3xl font-bold mb-6">
+                    🍕 Included Items
+                </h2>
+
+                {% for item in deal.items.all %}
+
+                <div class="flex justify-between items-center border-b py-4">
+
+                    <div>
+
+                        <h3 class="font-bold text-lg">
+                            {{ item.product.name }}
+                        </h3>
+
+                        <p class="text-gray-500">
+                            Quantity: {{ item.quantity }}
+                        </p>
+
+                    </div>
+
+                    <div class="font-bold text-green-600">
+                        Rs {{ item.product.final_price }}
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <p class="text-gray-500">
+                    No products available.
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+                <h2 class="text-3xl font-bold mb-6">
+                    📋 Deal Description
+                </h2>
+
+                <div class="prose max-w-none">
+                    {{ deal.description|safe }}
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div>
+
+            <div class="sticky top-24">
+
+                <div class="bg-white rounded-3xl shadow-2xl p-8">
+
+                    <div class="text-center">
+
+                        <div class="text-gray-500 font-semibold">
+                            Today Only
+                        </div>
+
+                        <div class="text-6xl font-black text-red-600 mt-3">
+                            Rs {{ deal.discounted_price }}
+                        </div>
+
+                        <div class="text-2xl text-gray-400 line-through mt-2">
+                            Rs {{ deal.original_price }}
+                        </div>
+
+                        <div class="bg-red-600 text-white rounded-xl py-3 mt-5 font-bold text-xl">
+                            SAVE {{ deal.savings_percentage|floatformat:0 }}%
+                        </div>
+
+                    </div>
+
+                    <!-- BREAKDOWN -->
+                    <div class="mt-8 border-t pt-6 space-y-4">
+
+                        <div class="flex justify-between">
+                            <span>Products Total</span>
+                            <span>Rs {{ deal.original_price }}</span>
+                        </div>
+
+                        <div class="flex justify-between text-red-600 font-bold">
+                            <span>Discount</span>
+                            <span>- Rs {{ deal.savings }}</span>
+                        </div>
+
+                        {% if deal.free_delivery %}
+                        <div class="flex justify-between text-green-600 font-bold">
+                            <span>Delivery</span>
+                            <span>FREE</span>
+                        </div>
+                        {% endif %}
+
+                        <hr>
+
+                        <div class="flex justify-between text-3xl font-black">
+
+                            <span>Total</span>
+
+                            <span class="text-red-600">
+                                Rs {{ deal.discounted_price }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% if deal.coupon_code %}
+
+                    <div class="mt-6 bg-orange-50 border border-orange-200 p-4 rounded-xl">
+
+                        <p class="text-sm text-gray-600">
+                            Coupon Code
+                        </p>
+
+                        <p class="text-xl font-black text-orange-600">
+                            {{ deal.coupon_code }}
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+                    {% if deal.end_date %}
+
+                    <div class="mt-6 text-center text-gray-500">
+                        ⏰ Offer Ends
+                        <br>
+                        {{ deal.end_date|date:"d M Y h:i A" }}
+                    </div>
+
+                    {% endif %}
+
+                    <!-- BUY BUTTON -->
+                     <form method="POST" action="{% url 'cart:add_deal_to_cart' deal.slug %}">
+    {% csrf_token %}
+
+    <button type="submit"
+        class="block mt-8 w-full bg-orange-600 hover:bg-orange-700 text-white text-center py-4 rounded-2xl font-bold text-xl transition shadow-lg">
+
+        🍕 Grab This Deal
+
+    </button>
+</form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}
+
+

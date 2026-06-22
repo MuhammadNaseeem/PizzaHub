@@ -1,0 +1,200 @@
+{% extends "core/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 text-gray-900 font-[ui-sans-serif] relative overflow-hidden">
+
+    <!-- Decorative Background Blobs -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-32 -left-32 w-[500px] h-[500px] bg-orange-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute top-40 right-0 w-[450px] h-[450px] bg-red-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-1/2 w-[500px] h-[500px] bg-yellow-300/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-14 relative z-10">
+
+        <!-- HEADER -->
+        <div class="text-center mb-14">
+            <p class="tracking-[0.35em] uppercase text-xs text-orange-600 font-semibold">
+                🔥 Fast & Secure Checkout
+            </p>
+
+            <h1 class="text-5xl md:text-6xl font-extrabold mt-4">
+                Complete Your <span class="text-red-500">Order</span>
+            </h1>
+
+            <p class="text-gray-600 mt-3">
+                Delicious food is just one step away 🍕
+            </p>
+        </div>
+
+        <form method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {% csrf_token %}
+
+            <!-- LEFT -->
+            <div class="lg:col-span-2 space-y-10">
+
+                <!-- SHIPPING -->
+                <div class="bg-white rounded-3xl p-10 shadow-xl border border-orange-100 hover:shadow-2xl transition">
+
+                    <h2 class="text-2xl font-bold text-orange-600 mb-8">
+                        🚚 Delivery Details
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <input name="full_name" required placeholder="Full Name"
+                               class="border border-orange-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400">
+
+                        <input name="phone" required placeholder="Phone Number"
+                               class="border border-orange-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400">
+
+                        <textarea name="address" rows="3" required placeholder="Full Address"
+                                  class="md:col-span-2 border border-orange-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400"></textarea>
+
+                        <input name="city" placeholder="City"
+                               class="border border-orange-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400">
+
+                        <input name="country" value="Pakistan"
+                               class="border border-orange-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400">
+
+                    </div>
+                </div>
+
+                <!-- PAYMENT -->
+                <div class="bg-white rounded-3xl p-10 shadow-xl border border-red-100">
+
+                    <h2 class="text-2xl font-bold text-red-500 mb-8">
+                        💳 Payment Method
+                    </h2>
+
+                    <div class="space-y-4">
+
+                        <!-- COD -->
+                        <label class="flex items-center justify-between p-5 rounded-2xl border border-gray-200 cursor-pointer hover:shadow-lg hover:border-orange-400 transition bg-gradient-to-r from-orange-50 to-yellow-50">
+                            <div>
+                                <p class="font-semibold">Cash on Delivery</p>
+                                <p class="text-sm text-gray-600">Pay when your pizza arrives 🍕</p>
+                            </div>
+                            <input type="radio" name="payment_method" value="cod" checked class="scale-125">
+                        </label>
+
+                        <!-- EASYPAISA -->
+                        <label class="flex items-center justify-between p-5 rounded-2xl border border-gray-200 cursor-pointer hover:shadow-lg hover:border-green-400 transition bg-gradient-to-r from-green-50 to-emerald-50">
+                            <div>
+                                <p class="font-semibold">EasyPaisa</p>
+                                <p class="text-sm text-gray-600">Quick mobile payment</p>
+                            </div>
+                            <input type="radio" name="payment_method" value="easypaisa" class="scale-125">
+                        </label>
+
+                        <!-- JAZZCASH -->
+                        <label class="flex items-center justify-between p-5 rounded-2xl border border-gray-200 cursor-pointer hover:shadow-lg hover:border-pink-400 transition bg-gradient-to-r from-pink-50 to-rose-50">
+                            <div>
+                                <p class="font-semibold">JazzCash</p>
+                                <p class="text-sm text-gray-600">Instant transfer</p>
+                            </div>
+                            <input type="radio" name="payment_method" value="jazzcash" class="scale-125">
+                        </label>
+
+                    </div>
+
+                    <!-- WALLET -->
+                    <div id="walletFields" class="hidden mt-6 p-5 rounded-2xl bg-yellow-50 border border-yellow-200">
+
+                        <input name="sender_number" placeholder="Sender Number"
+                               class="w-full border-b border-yellow-300 py-2 mb-4 focus:outline-none bg-transparent">
+
+                        <input name="transaction_id" placeholder="Transaction ID"
+                               class="w-full border-b border-yellow-300 py-2 focus:outline-none bg-transparent">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="lg:col-span-1">
+
+                <div class="sticky top-10 bg-white rounded-3xl shadow-2xl border border-orange-200 p-8">
+
+                    <h2 class="text-xl font-bold text-orange-600 mb-6">
+                        🛒 Your Order
+                    </h2>
+
+                    {% if cart_items %}
+
+                        <div class="space-y-4 max-h-[320px] overflow-y-auto pr-2">
+
+                            {% for item in cart_items %}
+                            <div class="flex justify-between border-b pb-3">
+
+                                <div>
+                                    <p class="font-semibold text-sm">
+                                        🍕 {{ item.variant.product.name }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">
+                                        Qty: {{ item.quantity }}
+                                    </p>
+                                </div>
+
+                                <p class="font-bold text-sm text-red-500">
+                                    Rs {{ item.total_price }}
+                                </p>
+
+                            </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="mt-6 flex justify-between border-t pt-5">
+                            <p class="text-lg font-semibold">Total</p>
+                            <p class="text-2xl font-extrabold text-green-600">
+                                Rs {{ total_price }}
+                            </p>
+                        </div>
+
+                        <button type="submit"
+                                class="mt-6 w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-2xl font-bold hover:scale-105 transition shadow-lg">
+                            🚀 Place Order
+                        </button>
+
+                    {% else %}
+
+                        <p class="text-gray-500 text-center">Your cart is empty</p>
+
+                        <a href="{% url 'menu:home' %}"
+                           class="block mt-4 text-center bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-2xl">
+                            Continue Shopping 🍕
+                        </a>
+
+                    {% endif %}
+
+                    <p class="text-center text-xs text-gray-400 mt-5">
+                        🔒 Secure • ⚡ Fast • 🍕 Fresh Food Guaranteed
+                    </p>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+const inputs = document.querySelectorAll('input[name="payment_method"]');
+const walletFields = document.getElementById("walletFields");
+
+function toggleWallet() {
+    const selected = document.querySelector('input[name="payment_method"]:checked').value;
+    walletFields.classList.toggle("hidden", selected === "cod");
+}
+
+inputs.forEach(i => i.addEventListener("change", toggleWallet));
+toggleWallet();
+</script>
+
+{% endblock %}

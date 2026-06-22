@@ -1,0 +1,298 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-amber-50 py-12">
+
+<div class="max-w-7xl mx-auto px-4">
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+    <!-- ================= IMAGE SECTION ================= -->
+    <div class="space-y-4">
+
+      <div class="rounded-3xl overflow-hidden shadow-2xl bg-white border border-gray-100">
+
+        {% if primary_image %}
+          <img id="mainImage"
+               src="{{ primary_image.image.url }}"
+               class="w-full h-[520px] object-cover hover:scale-105 transition duration-500">
+        {% else %}
+          <img id="mainImage"
+               src="{{ product.thumbnail.url }}"
+               class="w-full h-[520px] object-cover hover:scale-105 transition duration-500">
+        {% endif %}
+
+      </div>
+
+      <!-- THUMBNAILS -->
+      <div class="flex gap-3 overflow-x-auto">
+
+        {% for img in images %}
+        <img src="{{ img.image.url }}"
+             onclick="document.getElementById('mainImage').src='{{ img.image.url }}'"
+             class="w-20 h-20 rounded-xl object-cover cursor-pointer border-2 border-transparent hover:border-amber-500 hover:scale-110 transition">
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+    <!-- ================= INFO SECTION ================= -->
+    <div class="space-y-6">
+
+      <!-- CATEGORY BADGE -->
+      <span class="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 font-semibold text-sm">
+        {{ product.category.name }}
+      </span>
+
+      <!-- NAME -->
+      <h1 class="text-5xl font-extrabold text-gray-900 leading-tight">
+        {{ product.name }}
+      </h1>
+
+      <!-- RATING -->
+      <div class="flex items-center gap-3">
+
+        <div class="flex text-yellow-400 text-xl">
+          ★★★★★
+        </div>
+
+        <span class="text-gray-600 font-medium">
+          {{ reviews|length }} Reviews
+        </span>
+
+      </div>
+
+      <!-- PRICE CARD -->
+      <div class="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+
+        <div class="flex items-end gap-4">
+
+          <span class="text-4xl font-extrabold text-gray-900">
+            Rs {{ product.final_price }}
+          </span>
+
+          {% if product.sale_price %}
+          <span class="text-xl line-through text-gray-400">
+            Rs {{ product.base_price }}
+          </span>
+          {% endif %}
+
+        </div>
+
+        <p class="text-green-600 font-semibold mt-2">
+          ✔ Fresh • Hot • Delivered Fast
+        </p>
+
+      </div>
+
+      <!-- DESCRIPTION -->
+      <p class="text-gray-600 leading-relaxed">
+        {{ product.short_description }}
+      </p>
+
+      <!-- TAGS -->
+      {% if product.tags.all %}
+      <div class="flex flex-wrap gap-2">
+
+        {% for tag in product.tags.all %}
+        <a href="{% url 'menu:search_products' %}?q={{ tag.name }}"
+           class="px-3 py-1 rounded-full text-xs bg-gray-100 hover:bg-black hover:text-white transition">
+          {{ tag.name }}
+        </a>
+        {% endfor %}
+
+      </div>
+      {% endif %}
+
+      <!-- ================= CART BOX ================= -->
+      <form method="post"
+            action="{% url 'cart:add_to_cart' product.id %}"
+            class="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 space-y-4">
+
+        {% csrf_token %}
+
+        <!-- VARIANTS -->
+        {% if variants %}
+        <div>
+          <label class="font-semibold text-gray-700">Choose Size</label>
+
+          <select name="variant"
+                  class="w-full mt-2 border rounded-xl p-3 focus:ring-2 focus:ring-amber-400">
+            <option value="">Default</option>
+            {% for v in variants %}
+              <option value="{{ v.id }}">
+                {{ v.name }} - Rs {{ v.price }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+
+        <!-- QUANTITY -->
+        <div>
+          <label class="font-semibold text-gray-700">Quantity</label>
+
+          <input type="number"
+                 name="quantity"
+                 value="1"
+                 min="1"
+                 class="w-full mt-2 border rounded-xl p-3 focus:ring-2 focus:ring-amber-400">
+        </div>
+
+        <!-- ADDONS -->
+        {% if product.addons.all %}
+        <div>
+          <label class="font-semibold text-gray-700">Extras</label>
+
+          <div class="mt-2 space-y-2">
+            {% for addon in product.addons.all %}
+            <label class="flex items-center gap-2 text-gray-600">
+              <input type="checkbox" name="addons" value="{{ addon.id }}">
+              <span>{{ addon.name }} (+Rs {{ addon.price }})</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+<!-- ================= CUSTOMIZATION BUTTON ================= -->
+<div class="pt-2">
+<a href="{% url 'customization:product_customization_page' product.id %}"
+   class="block w-full text-center bg-gradient-to-r from-amber-400 to-orange-500 text-black font-bold py-3 rounded-2xl hover:scale-105 transition">
+    🍕 Customize Your Order
+</a>
+
+    <p class="text-xs text-gray-400 text-center mt-2">
+        Choose size, crust, toppings & extras
+    </p>
+</div>
+
+
+        <!-- BUTTONS -->
+        <div class="flex gap-3 pt-3">
+
+          <button type="submit"
+                  class="flex-1 bg-gradient-to-r from-black to-gray-800 text-white py-3 rounded-2xl font-bold hover:scale-105 transition">
+            🛒 Add to Cart
+          </button>
+
+          <button type="button"
+                  class="px-5 py-3 border rounded-2xl hover:bg-amber-50 hover:border-amber-400 transition">
+            ❤️
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= DESCRIPTION ================= -->
+  <div class="mt-16 bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+
+    <h2 class="text-2xl font-bold mb-4 text-gray-900">
+      Description
+    </h2>
+
+    <p class="text-gray-600 leading-relaxed">
+      {{ product.description|linebreaks }}
+    </p>
+
+  </div>
+
+  <!-- ================= REVIEWS ================= -->
+<!-- ================= REVIEWS ================= -->
+<div class="mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 pt-16 border-t border-gray-200/80">
+
+    <!-- LEFT SIDE -->
+    <div class="lg:col-span-4 space-y-4">
+        <h2 class="text-3xl font-serif font-normal tracking-tight text-[#111110]">
+            Customer Reviews
+        </h2>
+
+        <p class="text-sm text-gray-400 font-light leading-relaxed">
+            Real feedback from verified customers about taste, quality, and experience.
+        </p>
+
+        <div class="inline-block px-5 py-3 bg-white border border-gray-200 text-sm font-semibold">
+            ★ {{ avg_rating|floatformat:1 }} / 5.0
+            <span class="text-gray-400 font-light ml-1">
+                ({{ review_count }} Reviews)
+            </span>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="lg:col-span-8 space-y-6">
+
+        <!-- REVIEWS LIST -->
+        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+
+            {% for review in reviews %}
+            <div class="p-6 bg-white border border-gray-100 shadow-sm space-y-2">
+
+                <div class="flex justify-between text-xs uppercase tracking-wider">
+                    <strong class="text-gray-800">{{ review.user.username }}</strong>
+                    <span class="text-gray-500">
+                        ★ {{ review.rating }}
+                    </span>
+                </div>
+
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    "{{ review.comment }}"
+                </p>
+
+            </div>
+            {% empty %}
+            <p class="text-sm text-gray-400 italic">
+                No reviews yet. Be the first to share feedback.
+            </p>
+            {% endfor %}
+        </div>
+
+        <!-- REVIEW FORM -->
+        {% if user.is_authenticated %}
+        <div class="bg-white border border-gray-200 p-8 space-y-4">
+
+            <h3 class="text-xs uppercase tracking-widest text-gray-500">
+                Write a Review
+            </h3>
+
+            <form method="POST" action="{% url 'menu:add_review' product.id %}" class="space-y-4">
+                {% csrf_token %}
+
+                <select name="rating"
+                        class="w-full border p-3 bg-gray-50 rounded-lg">
+                    <option value="5">★★★★★ (5)</option>
+                    <option value="4">★★★★ (4)</option>
+                    <option value="3">★★★ (3)</option>
+                    <option value="2">★★ (2)</option>
+                    <option value="1">★ (1)</option>
+                </select>
+
+                <textarea name="comment"
+                          placeholder="Write your experience..."
+                          class="w-full border p-3 bg-gray-50 rounded-lg"></textarea>
+
+                <button class="px-8 py-3 bg-black text-white text-xs uppercase tracking-widest hover:bg-gray-800">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <p class="text-sm text-red-500">
+            Login required to submit review.
+        </p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

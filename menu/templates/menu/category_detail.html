@@ -1,0 +1,161 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- =========================
+ HERO SECTION
+========================= -->
+<section class="relative bg-gradient-to-r from-orange-500 to-red-600 text-white py-16">
+
+    <div class="max-w-7xl mx-auto px-6">
+
+        <h1 class="text-4xl md:text-5xl font-bold">
+            {{ category.name }}
+        </h1>
+
+        <p class="mt-3 text-lg text-white/90 max-w-2xl">
+            {{ category.description|default:"Delicious food made fresh just for you" }}
+        </p>
+
+    </div>
+
+</section>
+
+<!-- =========================
+ FILTER BAR
+========================= -->
+<section class="bg-white shadow-sm py-4 sticky top-0 z-10">
+
+    <div class="max-w-7xl mx-auto px-6 flex flex-wrap gap-3">
+
+        <a href="?sort=latest" class="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200">
+            Latest
+        </a>
+
+        <a href="?sort=price_low" class="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200">
+            Low Price
+        </a>
+
+        <a href="?sort=price_high" class="px-4 py-2 bg-gray-100 rounded-full text-sm hover:bg-gray-200">
+            High Price
+        </a>
+
+        <a href="?featured=1" class="px-4 py-2 bg-yellow-100 rounded-full text-sm hover:bg-yellow-200">
+            Featured
+        </a>
+
+    </div>
+
+</section>
+
+<!-- =========================
+ PRODUCTS GRID
+========================= -->
+<section class="py-12 bg-gray-50">
+
+    <div class="max-w-7xl mx-auto px-6">
+
+        <!-- Title -->
+        <div class="flex justify-between items-center mb-8">
+
+            <h2 class="text-2xl font-bold">
+                Available Items
+            </h2>
+
+            <span class="text-gray-500 text-sm">
+                {{ products.count }} items
+            </span>
+
+        </div>
+
+        <!-- GRID -->
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+            {% for product in products %}
+
+            <div class="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden group">
+
+                <!-- IMAGE -->
+                <div class="relative overflow-hidden">
+
+                    <img src="{{ product.thumbnail.url }}"
+                         class="h-48 w-full object-cover group-hover:scale-105 transition duration-300">
+
+                    {% if product.is_featured %}
+                    <span class="absolute top-2 left-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded">
+                        Featured
+                    </span>
+                    {% endif %}
+
+                    {% if product.sale_price %}
+                    <span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                        Sale
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                <!-- CONTENT -->
+                <div class="p-4">
+
+                    <h3 class="font-semibold text-lg">
+                        {{ product.name }}
+                    </h3>
+
+                    <p class="text-gray-500 text-sm mt-1 line-clamp-2">
+                        {{ product.short_description }}
+                    </p>
+
+                    <!-- PRICE -->
+                    <div class="mt-4 flex justify-between items-center">
+
+                        <div>
+
+                            <p class="text-orange-600 font-bold text-lg">
+                                Rs {{ product.final_price }}
+                            </p>
+
+                            {% if product.sale_price %}
+                            <p class="text-xs text-gray-400 line-through">
+                                Rs {{ product.base_price }}
+                            </p>
+                            {% endif %}
+
+                        </div>
+
+                        <a href="{% url 'menu:product_detail' product.slug %}"
+                           class="bg-black text-white px-3 py-1 rounded-lg text-sm hover:bg-gray-800">
+                            View
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <!-- EMPTY STATE -->
+            <div class="col-span-full text-center py-20">
+
+                <h3 class="text-2xl font-bold text-gray-500">
+                    No products found in {{ category.name }}
+                </h3>
+
+                <p class="text-gray-400 mt-2">
+                    Please check back later or explore other categories.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

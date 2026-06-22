@@ -1,0 +1,41 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+    <table class="w-full text-sm">
+
+        <thead class="bg-gray-100 text-left">
+            <tr>
+                <th class="p-3">Name</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Subject</th>
+                <th class="p-3">Message</th>
+                <th class="p-3">Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for msg in messages_list %}
+        <tr class="border-b hover:bg-gray-50">
+
+            <td class="p-3 font-medium">{{ msg.name }}</td>
+            <td class="p-3">{{ msg.email }}</td>
+            <td class="p-3">{{ msg.subject }}</td>
+            <td class="p-3">{{ msg.message|truncatechars:50 }}</td>
+            <td class="p-3">{{ msg.created_at }}</td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

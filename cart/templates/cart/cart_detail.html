@@ -1,0 +1,210 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-10">
+
+<div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-3 gap-8">
+
+    <!-- ================= CART ITEMS ================= -->
+    <div class="lg:col-span-2 space-y-6">
+
+        <h1 class="text-3xl font-black text-gray-900">
+            🛒 Your Cart
+        </h1>
+
+        {% for item in items %}
+
+        <div class="bg-white rounded-3xl shadow-md border p-6 flex gap-6">
+
+            <!-- IMAGE -->
+            <img src="{{ item.item.product.thumbnail.url }}"
+                 class="w-28 h-28 object-cover rounded-2xl border">
+
+            <!-- DETAILS -->
+            <div class="flex-1 space-y-2">
+
+                <h2 class="text-xl font-bold text-gray-900">
+                    {{ item.item.product.name }}
+                </h2>
+
+                {% if item.item.variant %}
+                <p class="text-sm text-gray-500">
+                    Variant: {{ item.item.variant.name }}
+                </p>
+                {% endif %}
+
+                <!-- ================= CUSTOMIZATION ================= -->
+                {% if item.item.customization_data %}
+
+                <div class="bg-gray-50 rounded-xl p-3 text-sm space-y-1">
+
+                    <p class="font-semibold text-gray-700">
+                        Customizations:
+                    </p>
+
+                    {% for c in item.item.customization_data %}
+
+                    <div class="flex justify-between text-gray-600">
+
+                        <span>{{ c.option }}</span>
+
+                        <span class="text-gray-900 font-medium">
+                            + Rs {{ c.price }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+                <!-- ================= ADDONS ================= -->
+                {% if item.item.addons.all %}
+
+                <div class="text-sm text-gray-600">
+
+                    <span class="font-semibold">Extras:</span>
+
+                    {% for a in item.item.addons.all %}
+                        {{ a.addon.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+                <!-- PRICE -->
+                <div class="mt-3 space-y-1">
+
+                    <p class="text-orange-600 font-black text-lg">
+                        Rs {{ item.line_total }}
+                    </p>
+
+                    {% if item.discount > 0 %}
+                    <p class="text-red-500 text-sm font-semibold">
+                        Discount: -Rs {{ item.discount }} (Large Pizza Offer)
+                    </p>
+                    {% endif %}
+
+                    <span class="text-xs text-gray-400">
+                        Qty: {{ item.item.quantity }}
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="flex flex-col gap-3">
+
+                <!-- UPDATE -->
+                <form method="POST"
+                      action="{% url 'cart:update_cart_item' item.item.id %}"
+                      class="flex items-center gap-2">
+
+                    {% csrf_token %}
+
+                    <input type="number"
+                           name="quantity"
+                           value="{{ item.item.quantity }}"
+                           min="1"
+                           class="w-16 border rounded-lg px-2 py-1">
+
+                    <button class="bg-black text-white px-3 py-1 rounded-lg text-sm hover:bg-gray-800">
+                        Update
+                    </button>
+
+                </form>
+
+                <!-- REMOVE -->
+                <a href="{% url 'cart:remove_from_cart' item.item.id %}"
+                   class="text-red-500 text-sm hover:underline">
+                    Remove
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="text-center py-20 bg-white rounded-3xl shadow border">
+            <h2 class="text-xl font-semibold text-gray-500">
+                Your cart is empty 🛒
+            </h2>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- ================= SUMMARY ================= -->
+<!-- ================= SUMMARY ================= -->
+<div class="bg-white rounded-3xl shadow-md border p-6 h-fit sticky top-6">
+
+    <h2 class="text-2xl font-black text-gray-900 mb-4">
+        Order Summary
+    </h2>
+
+    <div class="space-y-3 text-gray-600">
+
+        <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>Rs {{ subtotal }}</span>
+        </div>
+
+        <!-- CUSTOMIZATION + ADDON DISCOUNT -->
+        <div class="flex justify-between">
+            <span>Item Discount</span>
+            <span class="text-red-500 font-semibold">
+                - Rs {{ discount_amount }}
+            </span>
+        </div>
+
+        <!-- 🔥 DEAL DISCOUNT (NEW FIX) -->
+        <div class="flex justify-between">
+            <span>Deal Discount</span>
+            <span class="text-red-600 font-bold">
+                - Rs {{ deal_discount|default:0 }}
+            </span>
+        </div>
+
+        <div class="flex justify-between">
+            <span>Delivery</span>
+            <span class="text-green-600 font-medium">Free</span>
+        </div>
+
+    </div>
+
+    <hr class="my-4">
+
+    <div class="flex justify-between text-xl font-black">
+        <span>Total</span>
+        <span class="text-orange-600">
+            Rs {{ final_total }}
+        </span>
+    </div>
+
+    <!-- Breakdown helper -->
+    <p class="text-xs text-gray-400 mt-2">
+        Includes all discounts applied automatically
+    </p>
+
+<a href="{% url 'orders:checkout' %}"
+   class="block w-full mt-6 bg-black text-white py-3 rounded-2xl font-bold hover:bg-gray-800 transition text-center">
+    Proceed to Checkout 🚀
+</a>
+</div>
+
+
+
+
+</div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+  <!-- ================= SEARCH HEADER ================= -->
+  <div class="mb-8">
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">
+      Search Products
+    </h1>
+
+    <p class="text-gray-500">
+      Find your favorite items instantly
+    </p>
+
+  </div>
+
+  <!-- ================= FILTER BAR ================= -->
+  <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+
+    <!-- SEARCH INPUT -->
+    <input type="text"
+           name="q"
+           value="{{ query }}"
+           placeholder="Search pizza, burger, drinks..."
+           class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-black">
+
+    <!-- CATEGORY FILTER -->
+    <input type="text"
+           name="category"
+           value="{{ category }}"
+           placeholder="Category (pizza, burger)"
+           class="border rounded-lg p-3 w-full">
+
+    <!-- TAG FILTER -->
+    <input type="text"
+           name="tag"
+           value="{{ tag }}"
+           placeholder="Tag (spicy, cheesy)"
+           class="border rounded-lg p-3 w-full">
+
+    <!-- SORT -->
+    <select name="sort"
+            class="border rounded-lg p-3 w-full">
+
+      <option value="">Sort By</option>
+      <option value="featured" {% if sort == "featured" %}selected{% endif %}>Featured</option>
+      <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest</option>
+      <option value="price_low" {% if sort == "price_low" %}selected{% endif %}>Price Low</option>
+      <option value="price_high" {% if sort == "price_high" %}selected{% endif %}>Price High</option>
+
+    </select>
+
+  </form>
+
+  <!-- ================= RESULTS ================= -->
+  {% if products %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+      {% for product in products %}
+      <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden">
+
+        <!-- IMAGE -->
+        <div class="h-48 overflow-hidden bg-gray-100">
+          <img src="{{ product.thumbnail.url }}"
+               class="w-full h-full object-cover hover:scale-105 transition duration-300">
+        </div>
+
+        <!-- CONTENT -->
+        <div class="p-4 space-y-2">
+
+          <h3 class="font-bold text-gray-900 line-clamp-1">
+            {{ product.name }}
+          </h3>
+
+          <p class="text-sm text-gray-500 line-clamp-2">
+            {{ product.short_description }}
+          </p>
+
+          <!-- PRICE -->
+          <div class="flex items-center justify-between">
+
+            <span class="font-bold text-black">
+              Rs {{ product.base_price }}
+            </span>
+
+            {% if product.sale_price %}
+              <span class="text-xs line-through text-gray-400">
+                {{ product.sale_price }}
+              </span>
+            {% endif %}
+
+          </div>
+
+          <!-- BUTTON -->
+          <a href="{% url 'menu:product_detail' product.slug %}"
+             class="block text-center bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
+            View
+          </a>
+
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+  {% else %}
+
+    <!-- ================= EMPTY STATE ================= -->
+    <div class="text-center py-20">
+
+      <h2 class="text-2xl font-bold text-gray-700">
+        No products found
+      </h2>
+
+      <p class="text-gray-500 mt-2">
+        Try different keywords or filters
+      </p>
+
+    </div>
+
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

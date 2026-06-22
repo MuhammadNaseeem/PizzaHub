@@ -1,0 +1,52 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block content %}
+
+<div class="bg-white rounded-xl shadow overflow-hidden">
+
+    <table class="w-full text-sm">
+
+        <thead class="bg-gray-100 text-left">
+            <tr>
+                <th class="p-3">Customer</th>
+                <th class="p-3">Product</th>
+                <th class="p-3">Rating</th>
+                <th class="p-3">Review</th>
+                <th class="p-3">Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for review in reviews %}
+        <tr class="border-b hover:bg-gray-50">
+
+            <td class="p-3">{{ review.user.username }}</td>
+            <td class="p-3">{{ review.product.name }}</td>
+
+            <td class="p-3 text-yellow-500">
+                ⭐ {{ review.rating }}
+            </td>
+
+            <td class="p-3">{{ review.comment|truncatechars:40 }}</td>
+
+            <td class="p-3">
+                {% if review.is_approved %}
+                    <span class="text-green-600">Approved</span>
+                {% else %}
+                    <span class="text-yellow-600">Pending</span>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "core/base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 px-6 py-12">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- HEADER -->
+        <div class="bg-white rounded-3xl shadow-xl border p-8 mb-8">
+
+            <h1 class="text-3xl font-bold">
+                Order <span class="text-orange-500">#{{ order.id }}</span>
+            </h1>
+
+            <p class="text-gray-500 mt-2">
+                Placed on {{ order.created_at }}
+            </p>
+
+            <div class="mt-6 flex gap-3 flex-wrap">
+
+                <span class="px-4 py-1 rounded-full text-sm font-medium
+                    {% if order.status == 'pending' %}
+                        bg-yellow-100 text-yellow-700
+                    {% elif order.status == 'completed' %}
+                        bg-green-100 text-green-700
+                    {% else %}
+                        bg-gray-100 text-gray-700
+                    {% endif %}
+                ">
+                    {{ order.status }}
+                </span>
+
+                <span class="px-4 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
+                    {{ order.payment_method }}
+                </span>
+
+                <span class="px-4 py-1 rounded-full text-sm bg-black text-white">
+                    Rs {{ order.total_price }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- CUSTOMER INFO -->
+        <div class="bg-white rounded-3xl shadow-lg border p-8 mb-8">
+
+            <h2 class="text-xl font-bold mb-4">Customer Info</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+
+                <p><span class="font-semibold">Name:</span> {{ order.full_name }}</p>
+                <p><span class="font-semibold">Phone:</span> {{ order.phone }}</p>
+                <p><span class="font-semibold">City:</span> {{ order.city }}</p>
+                <p><span class="font-semibold">Country:</span> {{ order.country }}</p>
+                <p class="md:col-span-2">
+                    <span class="font-semibold">Address:</span> {{ order.address }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEMS -->
+        <div class="bg-white rounded-3xl shadow-lg border p-8 mb-8">
+
+            <h2 class="text-xl font-bold mb-6">Order Items</h2>
+
+            <div class="space-y-4">
+
+                {% for item in order.items.all %}
+                <div class="flex justify-between items-center border-b pb-3">
+
+                    <div>
+                        <p class="font-semibold">
+                            🍕 {{ item.variant.product.name }}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            Qty: {{ item.quantity }}
+                        </p>
+                    </div>
+
+                    <p class="font-bold text-orange-500">
+                        Rs {{ item.price }}
+                    </p>
+
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- BACK BUTTON -->
+<div class="text-center space-x-3">
+
+    <a href="{% url 'orders:order_list' %}"
+       class="inline-block bg-black text-white px-6 py-3 rounded-xl hover:opacity-90">
+        ← My Orders
+    </a>
+
+    <a href="{% url 'menu:home' %}"
+       class="inline-block bg-orange-500 text-white px-6 py-3 rounded-xl hover:opacity-90">
+        🍕 Continue Shopping
+    </a>
+
+</div>
+
+    </div>
+
+</div>
+
+{% endblock %}

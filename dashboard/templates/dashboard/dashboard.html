@@ -1,0 +1,48 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<!-- STATS -->
+<div class="grid grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-white p-5 rounded-xl shadow">
+        <h2 class="text-gray-500">Products</h2>
+        <p class="text-2xl font-bold">{{ total_products }}</p>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow">
+        <h2 class="text-gray-500">Orders</h2>
+        <p class="text-2xl font-bold">{{ total_orders }}</p>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow">
+        <h2 class="text-gray-500">Customers</h2>
+        <p class="text-2xl font-bold">{{ total_customers }}</p>
+    </div>
+
+</div>
+
+<!-- CHART -->
+<div class="bg-white p-6 rounded-xl shadow">
+
+    <canvas id="orderChart"></canvas>
+
+</div>
+
+<script>
+const ctx = document.getElementById('orderChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [{
+            label: 'Orders',
+            data: {{ chart_data|safe }},
+            backgroundColor: '#ef4444'
+        }]
+    }
+});
+</script>
+
+{% endblock %}
