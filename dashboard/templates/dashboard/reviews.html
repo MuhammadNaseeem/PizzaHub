@@ -1,52 +1,174 @@
 {% extends 'dashboard/base.html' %}
 
-{% block title %}Reviews{% endblock %}
+{% block title %}Customer Reviews{% endblock %}
 
 {% block content %}
 
-<div class="bg-white rounded-xl shadow overflow-hidden">
+<div class="space-y-8">
 
-    <table class="w-full text-sm">
+    <!-- HEADER -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
-        <thead class="bg-gray-100 text-left">
-            <tr>
-                <th class="p-3">Customer</th>
-                <th class="p-3">Product</th>
-                <th class="p-3">Rating</th>
-                <th class="p-3">Review</th>
-                <th class="p-3">Status</th>
-            </tr>
-        </thead>
+        <div>
+            <h1 class="text-4xl font-black text-gray-900">
+                ⭐ Customer Reviews
+            </h1>
 
-        <tbody>
+            <p class="text-gray-500 mt-2">
+                Manage customer ratings, feedback, and product reviews.
+            </p>
+        </div>
+
+        <div class="flex gap-3">
+
+            <a href="{% url 'dashboard:dashboard' %}"
+               class="px-5 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition">
+                ← Dashboard
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_products' %}"
+               class="px-5 py-3 rounded-xl bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition">
+                🍕 Products
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-3xl text-white shadow-xl">
+            <p class="text-sm opacity-90">Total Reviews</p>
+            <h2 class="text-4xl font-black mt-2">
+                {{ reviews.count }}
+            </h2>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-6 rounded-3xl text-white shadow-xl">
+            <p class="text-sm opacity-90">Approved Reviews</p>
+            <h2 class="text-4xl font-black mt-2">
+                {{ approved_count }}
+            </h2>
+        </div>
+
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 rounded-3xl text-white shadow-xl">
+            <p class="text-sm opacity-90">Average Rating</p>
+            <h2 class="text-4xl font-black mt-2">
+                ⭐ {{ average_rating }}
+            </h2>
+        </div>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="bg-white rounded-3xl shadow-lg p-6">
+
+        <form method="GET">
+            <input
+                type="text"
+                name="q"
+                placeholder="Search customer, product, or review..."
+                class="w-full border border-gray-200 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            >
+        </form>
+
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
 
         {% for review in reviews %}
-        <tr class="border-b hover:bg-gray-50">
 
-            <td class="p-3">{{ review.user.username }}</td>
-            <td class="p-3">{{ review.product.name }}</td>
+        <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 hover:shadow-2xl transition">
 
-            <td class="p-3 text-yellow-500">
-                ⭐ {{ review.rating }}
-            </td>
+            <div class="flex justify-between items-start mb-4">
 
-            <td class="p-3">{{ review.comment|truncatechars:40 }}</td>
+                <div>
+                    <h3 class="font-black text-xl text-gray-900">
+                        {{ review.user.username }}
+                    </h3>
 
-            <td class="p-3">
-                {% if review.is_approved %}
-                    <span class="text-green-600">Approved</span>
-                {% else %}
-                    <span class="text-yellow-600">Pending</span>
-                {% endif %}
-            </td>
+                    <p class="text-gray-500 text-sm">
+                        🍕 {{ review.product.name }}
+                    </p>
+                </div>
 
-        </tr>
+                <div class="bg-yellow-100 text-yellow-600 px-4 py-2 rounded-full font-bold">
+                    ⭐ {{ review.rating }}/5
+                </div>
+
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+
+                <p class="text-gray-700">
+                    "{{ review.comment }}"
+                </p>
+
+            </div>
+
+            <div class="flex justify-between items-center">
+
+                <div>
+
+                    {% if review.is_approved %}
+                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+                        ✅ Approved
+                    </span>
+                    {% else %}
+                    <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold">
+                        ⏳ Pending
+                    </span>
+                    {% endif %}
+
+                </div>
+
+                <div class="flex gap-2">
+                    
+                    <a href="{% url 'dashboard:approve_review' review.id %}"
+   class="px-4 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600">
+    ✅ Approve
+</a>
+
+<a href="{% url 'dashboard:delete_review' review.id %}"
+   class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600"
+   onclick="return confirm('Delete this review?')">
+    🗑 Delete
+</a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-span-full">
+
+            <div class="bg-white rounded-3xl p-16 text-center shadow-lg">
+
+                <div class="text-7xl mb-4">⭐</div>
+
+                <h3 class="text-2xl font-black text-gray-800">
+                    No Reviews Found
+                </h3>
+
+                <p class="text-gray-500 mt-2">
+                    Customer reviews will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
         {% endfor %}
 
-        </tbody>
-
-    </table>
+    </div>
 
 </div>
 
 {% endblock %}
+

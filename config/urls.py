@@ -10,6 +10,8 @@ urlpatterns = [
 
     path('accounts/', include('accounts.urls')),
 
+    path('dashboard/', include('dashboard.urls')),
+
     path('menu/', include('menu.urls')),
 
     path('deals/', include('deals.urls')),
@@ -19,6 +21,8 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
 
     path('orders/', include('orders.urls')),
+
+    path('coupons/', include('coupons.urls')),
     
 ]
 

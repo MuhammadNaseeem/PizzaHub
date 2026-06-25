@@ -1,40 +1,217 @@
-{% extends 'dashboard/base.html' %}
+{% extends "core/base.html" %}
 
-{% block title %}Messages{% endblock %}
+{% block title %}Customer Messages{% endblock %}
 
 {% block content %}
 
-<div class="bg-white rounded-xl shadow overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-8">
 
-    <table class="w-full text-sm">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
 
-        <thead class="bg-gray-100 text-left">
-            <tr>
-                <th class="p-3">Name</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Subject</th>
-                <th class="p-3">Message</th>
-                <th class="p-3">Date</th>
-            </tr>
-        </thead>
+        <div>
+            <h1 class="text-4xl font-black">
+                📩 Customer Messages
+            </h1>
 
-        <tbody>
+            <p class="text-gray-400 mt-2">
+                Manage customer inquiries and support requests
+            </p>
+        </div>
 
-        {% for msg in messages_list %}
-        <tr class="border-b hover:bg-gray-50">
+        <a href="{% url 'dashboard:dashboard' %}"
+           class="bg-red-600 px-5 py-3 rounded-xl hover:bg-red-700 transition">
+            ← Back Dashboard
+        </a>
 
-            <td class="p-3 font-medium">{{ msg.name }}</td>
-            <td class="p-3">{{ msg.email }}</td>
-            <td class="p-3">{{ msg.subject }}</td>
-            <td class="p-3">{{ msg.message|truncatechars:50 }}</td>
-            <td class="p-3">{{ msg.created_at }}</td>
+    </div>
 
-        </tr>
-        {% endfor %}
+    <!-- Stats -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
 
-        </tbody>
+        <div class="bg-red-600 rounded-3xl p-6">
+            <p class="text-white/70">New Messages</p>
+            <h2 class="text-4xl font-black mt-2">
+                {{ new_messages }}
+            </h2>
+        </div>
 
-    </table>
+        <div class="bg-blue-600 rounded-3xl p-6">
+            <p class="text-white/70">Read Messages</p>
+            <h2 class="text-4xl font-black mt-2">
+                {{ read_messages }}
+            </h2>
+        </div>
+
+        <div class="bg-green-600 rounded-3xl p-6">
+            <p class="text-white/70">Total Messages</p>
+            <h2 class="text-4xl font-black mt-2">
+                {{ total_messages }}
+            </h2>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <form method="GET" class="mb-8">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ request.GET.q }}"
+            placeholder="Search by name, email, or subject..."
+            class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:outline-none focus:border-red-500"
+        >
+
+    </form>
+
+    <!-- Messages Table -->
+    <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden">
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full">
+
+                <thead class="bg-white/10">
+
+                    <tr>
+                        <th class="p-4 text-left">Name</th>
+                        <th class="p-4 text-left">Email</th>
+                        <th class="p-4 text-left">Subject</th>
+                        <th class="p-4 text-left">Status</th>
+                        <th class="p-4 text-left">Date</th>
+                        <th class="p-4 text-left">Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for message in page_obj %}
+
+                    <tr class="border-t border-white/10 hover:bg-white/5">
+
+                        <td class="p-4 font-semibold">
+                            {{ message.name }}
+                        </td>
+
+                        <td class="p-4 text-red-400">
+                            {{ message.email }}
+                        </td>
+
+                        <td class="p-4">
+                            {{ message.subject }}
+                        </td>
+
+                        <td class="p-4">
+
+                            {% if message.status == 'new' %}
+                                <span class="bg-red-500 px-3 py-1 rounded-full text-xs">
+                                    New
+                                </span>
+                            {% elif message.status == 'read' %}
+                                <span class="bg-blue-500 px-3 py-1 rounded-full text-xs">
+                                    Read
+                                </span>
+                            {% else %}
+                                <span class="bg-green-500 px-3 py-1 rounded-full text-xs">
+                                    Replied
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td class="p-4 text-gray-400">
+                            {{ message.created_at|date:"d M Y H:i" }}
+                        </td>
+
+                        <td class="p-4">
+
+                            <div class="flex gap-2">
+
+                                {% if message.status == 'new' %}
+                                <a href="{% url 'dashboard:mark_message_read' message.id %}"
+                                   class="bg-blue-600 px-3 py-2 rounded-lg text-xs hover:bg-blue-700">
+                                    Mark Read
+                                </a>
+                                {% endif %}
+
+                                <form method="POST"
+                                      action="{% url 'dashboard:delete_message' message.id %}"
+                                      onsubmit="return confirm('Delete this message?');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="bg-red-600 px-3 py-2 rounded-lg text-xs hover:bg-red-700">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <tr class="border-b border-white/10">
+
+                        <td colspan="6" class="px-4 pb-6 text-gray-300">
+
+                            <div class="bg-black/20 rounded-xl p-4">
+                                {{ message.message }}
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="text-center py-10 text-gray-400">
+
+                            No messages found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-8 gap-3">
+
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"
+               class="bg-white/10 px-4 py-2 rounded-xl">
+                Previous
+            </a>
+        {% endif %}
+
+        <span class="px-4 py-2">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}"
+               class="bg-white/10 px-4 py-2 rounded-xl">
+                Next
+            </a>
+        {% endif %}
+
+    </div>
 
 </div>
 

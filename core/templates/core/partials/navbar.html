@@ -107,24 +107,196 @@
                     <span>⌄</span>
                 </button>
 
-                <!-- DROPDOWN -->
-                <div id="userDropdown"
-                    class="hidden absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 overflow-hidden">
+<!-- DROPDOWN -->
+<div id="userDropdown"
+    class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50 overflow-hidden">
 
-                    <a href="/dashboard/" class="block px-4 py-2 text-sm hover:bg-gray-100">Dashboard</a>
-                    <a href="/accounts/profile/" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
-                    <a href="/orders/" class="block px-4 py-2 text-sm hover:bg-gray-100">My Orders</a>
-                    <a href="/cart/" class="block px-4 py-2 text-sm hover:bg-gray-100">My Cart</a>
+    <!-- DASHBOARD HOME -->
+    <a href="{% url 'dashboard:dashboard' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📊 Dashboard Home
+    </a>
 
-                    <div class="border-t"></div>
+    <!-- PRODUCTS LIST -->
+    <a href="{% url 'dashboard:dashboard_products' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🍕 Products
+    </a>
 
-                    <a href="/accounts/logout/" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                        Logout
-                    </a>
+    <!-- ADD PRODUCT -->
+    <a href="{% url 'dashboard:add_product' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ➕ Add Product
+    </a>
 
-                </div>
+    <!-- ORDERS -->
+    <a href="{% url 'dashboard:dashboard_orders' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📦 Orders
+    </a>
 
-                {% else %}
+    <!-- CUSTOMERS -->
+    <a href="{% url 'dashboard:dashboard_customers' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        👥 Customers
+    </a>
+
+    <!-- COUPONS -->
+    <a href="{% url 'dashboard:dashboard_coupons' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🎟 Coupons
+    </a>
+
+    <!-- REVIEWS -->
+    <a href="{% url 'dashboard:dashboard_reviews' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ⭐ Reviews
+    </a>
+
+    <!-- MESSAGES -->
+    <a href="{% url 'dashboard:dashboard_messages' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        💌 Messages
+    </a>
+
+    <div class="border-t"></div>
+
+    <!-- OPTIONAL: LOGOUT -->
+    <a href="{% url 'accounts:logout' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
+        🚪 Logout
+    </a>
+
+</div>
+
+
+<!-- DROPDOWN -->
+<div id="userDropdown"
+    class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50 overflow-hidden">
+
+    <!-- DASHBOARD HOME -->
+    <a href="{% url 'dashboard:dashboard' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📊 Dashboard Home
+    </a>
+
+    <!-- PRODUCTS LIST -->
+    <a href="{% url 'dashboard:dashboard_products' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🍕 Products
+    </a>
+
+    <!-- ADD PRODUCT -->
+    <a href="{% url 'dashboard:add_product' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ➕ Add Product
+    </a>
+
+    <!-- ORDERS -->
+    <a href="{% url 'dashboard:dashboard_orders' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📦 Orders
+    </a>
+
+    <!-- CUSTOMERS -->
+    <a href="{% url 'dashboard:dashboard_customers' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        👥 Customers
+    </a>
+
+    <!-- COUPONS -->
+    <a href="{% url 'dashboard:dashboard_coupons' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🎟 Coupons
+    </a>
+
+    <!-- REVIEWS -->
+    <a href="{% url 'dashboard:dashboard_reviews' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ⭐ Reviews
+    </a>
+
+    <!-- MESSAGES -->
+    <a href="{% url 'dashboard:dashboard_messages' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        💌 Messages
+    </a>
+
+    <div class="border-t"></div>
+
+    <!-- OPTIONAL: LOGOUT -->
+    <a href="{% url 'accounts:logout' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
+        🚪 Logout
+    </a>
+
+</div>
+
+
+
+<!-- DROPDOWN -->
+<div id="userDropdown"
+    class="hidden absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg z-50 overflow-hidden">
+
+    <!-- DASHBOARD HOME -->
+    <a href="{% url 'dashboard:dashboard' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📊 Dashboard Home
+    </a>
+
+    <!-- PRODUCTS LIST -->
+    <a href="{% url 'dashboard:dashboard_products' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🍕 Products
+    </a>
+
+    <!-- ADD PRODUCT -->
+    <a href="{% url 'dashboard:add_product' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ➕ Add Product
+    </a>
+
+    <!-- ORDERS -->
+    <a href="{% url 'dashboard:dashboard_orders' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        📦 Orders
+    </a>
+
+    <!-- CUSTOMERS -->
+    <a href="{% url 'dashboard:dashboard_customers' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        👥 Customers
+    </a>
+
+    <!-- COUPONS -->
+    <a href="{% url 'dashboard:dashboard_coupons' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        🎟 Coupons
+    </a>
+
+    <!-- REVIEWS -->
+    <a href="{% url 'dashboard:dashboard_reviews' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        ⭐ Reviews
+    </a>
+
+    <!-- MESSAGES -->
+    <a href="{% url 'dashboard:dashboard_messages' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 transition">
+        💌 Messages
+    </a>
+
+    <div class="border-t"></div>
+
+    <!-- OPTIONAL: LOGOUT -->
+    <a href="{% url 'accounts:logout' %}"
+       class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition">
+        🚪 Logout
+    </a>
+
+</div>
+
+{% else %}
 
                 <a href="/accounts/login/"
                     class="text-sm font-medium text-gray-700 hover:text-red-600">

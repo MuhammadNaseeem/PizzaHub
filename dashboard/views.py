@@ -1,44 +1,70 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-
-# from menu.models import Product
-# from orders.models import Order
-from core.models import ContactMessage
-from menu.models import Review
-from menu.models import Coupon
-
-from django.http import JsonResponse
-from menu.models import Product
-
-
-# ---------------- DASHBOARD HOME ----------------
 from django.db.models import Count
-from cart.models import Order
-from menu.models import Product
-from django.contrib.auth.models import User
+
+from orders.models import Order
+from menu.models import Product, ProductReview
+from core.models import ContactMessage
+
 
 def dashboard_home(request):
 
     orders = Order.objects.all()
 
-    # Simple stats
     total_products = Product.objects.count()
     total_orders = orders.count()
     total_customers = User.objects.count()
 
-    # Chart data (last 7 orders by status)
-    order_status_data = orders.values('status').annotate(total=Count('id'))
+    # Messages
+    total_messages = ContactMessage.objects.count()
 
-    labels = [i['status'] for i in order_status_data]
-    data = [i['total'] for i in order_status_data]
+    unread_messages = ContactMessage.objects.filter(
+        status='new'
+    ).count()
 
-    return render(request, 'dashboard/dashboard.html', {
+    # Reviews
+    total_reviews = ProductReview.objects.count()
+
+    recent_reviews = ProductReview.objects.select_related(
+        'user',
+        'product'
+    ).order_by('-created_at')[:5]
+
+    # Orders
+    recent_orders = orders.order_by('-id')[:5]
+
+    # Chart Data
+    order_status_data = (
+        orders.values('status')
+        .annotate(total=Count('id'))
+    )
+
+    labels = [item['status'] for item in order_status_data]
+    data = [item['total'] for item in order_status_data]
+
+    context = {
         'total_products': total_products,
         'total_orders': total_orders,
         'total_customers': total_customers,
+
+        'total_messages': total_messages,
+        'unread_messages': unread_messages,
+
+        'total_reviews': total_reviews,
+        'recent_reviews': recent_reviews,
+
+        'recent_orders': recent_orders,
+
         'chart_labels': labels,
         'chart_data': data,
-    })
+    }
+
+    return render(
+        request,
+        'dashboard/dashboard.html',
+        context
+    )
+
 
 
 # ---------------- PRODUCTS ----------------
@@ -136,15 +162,120 @@ def reviews(request):
 
 
 # ---------------- MESSAGES ----------------
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 def messages_page(request):
 
-    messages_list = ContactMessage.objects.all().order_by('-id')
+    query = request.GET.get('q')
 
-    paginator = Paginator(messages_list, 10)
-    page_obj = paginator.get_page(request.GET.get('page'))
+    messages = ContactMessage.objects.all().order_by('-created_at')
 
-    return render(request, 'dashboard/messages.html', {
+    if query:
+        messages = messages.filter(
+            Q(name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(subject__icontains=query)
+        )
+
+    paginator = Paginator(messages, 10)
+
+    page_obj = paginator.get_page(
+        request.GET.get('page')
+    )
+
+    context = {
         'page_obj': page_obj,
-    })
+        'new_messages': ContactMessage.objects.filter(status='new').count(),
+        'read_messages': ContactMessage.objects.filter(status='read').count(),
+        'total_messages': ContactMessage.objects.count(),
+    }
 
+    return render(
+        request,
+        'dashboard/messages.html',
+        context
+    )
+
+
+
+from django.shortcuts import redirect, get_object_or_404
+from core.models import ContactMessage
+
+def delete_message(request, id):
+    message = get_object_or_404(ContactMessage, id=id)
+
+    if request.method == "POST":
+        message.delete()
+
+    return redirect('dashboard:dashboard_messages')
+
+
+def mark_message_read(request, id):
+    message = get_object_or_404(ContactMessage, id=id)
+
+    message.status = 'read'
+    message.save()
+
+    return redirect('dashboard:dashboard_messages')
+
+
+
+from django.shortcuts import redirect
+
+def add_product(request):
+    return redirect('/admin/menu/product/add/')
+
+
+from django.shortcuts import redirect
+
+def add_deal(request):
+    return redirect('/admin/deals/product/add/')
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Avg
+from menu.models import ProductReview
+
+
+def reviews(request):
+    reviews = ProductReview.objects.select_related(
+        'user',
+        'product'
+    ).order_by('-created_at')
+
+    approved_count = ProductReview.objects.filter(
+        is_approved=True
+    ).count()
+
+    average_rating = ProductReview.objects.aggregate(
+        Avg('rating')
+    )['rating__avg'] or 0
+
+    return render(
+        request,
+        'dashboard/reviews.html',
+        {
+            'reviews': reviews,
+            'approved_count': approved_count,
+            'average_rating': round(average_rating, 1),
+        }
+    )
+
+
+def approve_review(request, pk):
+    review = get_object_or_404(ProductReview, pk=pk)
+
+    review.is_approved = True
+    review.save()
+
+    return redirect('dashboard:dashboard_reviews')
+
+
+def delete_review(request, pk):
+    review = get_object_or_404(ProductReview, pk=pk)
+
+    review.delete()
+
+    return redirect('dashboard:dashboard_reviews')
 

@@ -1,48 +1,289 @@
-{% extends 'dashboard/base.html' %}
+{% extends "core/base.html" %}
+
+{% block title %}PizzaHub Admin{% endblock %}
 
 {% block content %}
 
-<!-- STATS -->
-<div class="grid grid-cols-3 gap-4 mb-6">
+<div class="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white">
 
-    <div class="bg-white p-5 rounded-xl shadow">
-        <h2 class="text-gray-500">Products</h2>
-        <p class="text-2xl font-bold">{{ total_products }}</p>
+<div class="flex">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 min-h-screen bg-white/5 backdrop-blur-2xl border-r border-white/10 p-6 hidden lg:block">
+
+        <!-- LOGO -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-black text-red-500">
+                🍕 PizzaHub
+            </h1>
+            <p class="text-xs tracking-widest uppercase text-gray-400 mt-1">
+                Admin Panel
+            </p>
+        </div>
+
+        <!-- MENU -->
+        <nav class="space-y-3">
+
+            <a href="{% url 'dashboard:dashboard' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-red-600 shadow-lg font-semibold">
+
+                📊 Dashboard
+
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_products' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition">
+
+                🍕 Products
+
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_orders' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition">
+
+                📦 Orders
+
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_customers' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition">
+
+                👥 Customers
+
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_coupons' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition">
+
+                🎟 Coupons
+
+            </a>
+
+            <a href="{% url 'dashboard:dashboard_reviews' %}"
+               class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10 transition">
+
+                ⭐ Reviews
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-8">
+
+        <!-- HEADER -->
+        <div class="mb-10">
+            <h2 class="text-5xl font-black">
+                Welcome Admin 👋
+            </h2>
+            <p class="text-gray-400 mt-2">
+                Manage your Pizza business in real-time
+            </p>
+        </div>
+
+        <!-- STATS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+
+            <div class="bg-gradient-to-br from-red-500 to-pink-500 rounded-3xl p-6 shadow-2xl">
+                <p class="text-sm text-white/80">Revenue</p>
+                <h2 class="text-4xl font-black mt-3">
+                    Rs {{ total_revenue }}
+                </h2>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-3xl p-6 shadow-2xl">
+                <p class="text-sm text-white/80">Orders</p>
+                <h2 class="text-4xl font-black mt-3">
+                    {{ total_orders }}
+                </h2>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl p-6 shadow-2xl">
+                <p class="text-sm text-white/80">Products</p>
+                <h2 class="text-4xl font-black mt-3">
+                    {{ total_products }}
+                </h2>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-6 shadow-2xl">
+                <p class="text-sm text-white/80">Customers</p>
+                <h2 class="text-4xl font-black mt-3">
+                    {{ total_customers }}
+                </h2>
+            </div>
+
+        </div>
+
+<!-- CONTENT GRID -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+    <!-- RECENT ORDERS -->
+    <div class="xl:col-span-2 bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-2xl">
+
+        <h3 class="text-2xl font-black mb-6">
+            📦 Recent Orders
+        </h3>
+
+        <div class="space-y-4">
+
+            {% for order in recent_orders %}
+            <div class="bg-white/5 p-4 rounded-2xl flex justify-between items-center">
+
+                <div>
+                    <p class="font-bold">{{ order.user.username }}</p>
+                    <p class="text-gray-400 text-sm">{{ order.created_at }}</p>
+                </div>
+
+                <div class="text-green-400 font-black">
+                    Rs {{ order.total_price }}
+                </div>
+
+            </div>
+            {% empty %}
+            <p class="text-gray-400">No orders yet</p>
+            {% endfor %}
+
+        </div>
+
     </div>
 
-    <div class="bg-white p-5 rounded-xl shadow">
-        <h2 class="text-gray-500">Orders</h2>
-        <p class="text-2xl font-bold">{{ total_orders }}</p>
+    <!-- QUICK ACTIONS -->
+    <div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-2xl">
+
+        <h3 class="text-2xl font-black mb-6">
+            ⚡ Quick Actions
+        </h3>
+
+        <div class="space-y-4">
+
+            <!-- <a href="{% url 'dashboard:add_product' %}"
+               class="block bg-red-600 text-center py-3 rounded-xl font-semibold hover:bg-red-700">
+                ➕ Add Product
+            </a>
+
+            <a href="{% url 'admin:deals_deal_add' %}"
+   class="block bg-green-600 text-center py-3 rounded-xl font-semibold hover:bg-green-700">
+    🎁 Add Deal
+</a>
+ -->
+
+            <a href="{% url 'dashboard:dashboard_orders' %}"
+               class="block bg-blue-600 text-center py-3 rounded-xl font-semibold hover:bg-blue-700">
+                📦 View Orders
+            </a>
+
+        </div>
+
     </div>
 
-    <div class="bg-white p-5 rounded-xl shadow">
-        <h2 class="text-gray-500">Customers</h2>
-        <p class="text-2xl font-bold">{{ total_customers }}</p>
+<!-- CUSTOMER MESSAGES -->
+<div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-2xl hover:border-red-500/30 transition-all duration-300">
+
+    <div class="flex items-center justify-between mb-5">
+
+        <div>
+            <h3 class="text-2xl font-black">
+                📩 Customer Messages
+            </h3>
+
+            <p class="text-gray-400 mt-1">
+                View and manage customer inquiries
+            </p>
+        </div>
+
+        <div class="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center text-2xl">
+            📬
+        </div>
+
     </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+
+        <div class="bg-white/5 rounded-2xl p-4 text-center">
+            <p class="text-gray-400 text-sm">
+                Total Messages
+            </p>
+
+            <h4 class="text-3xl font-black mt-1">
+                {{ total_messages }}
+            </h4>
+        </div>
+
+        <div class="bg-red-500/20 border border-red-500/30 rounded-2xl p-4 text-center">
+            <p class="text-red-300 text-sm">
+                Unread
+            </p>
+
+            <h4 class="text-3xl font-black text-red-400 mt-1">
+                {{ unread_messages }}
+            </h4>
+        </div>
+
+    </div>
+
+    <a href="{% url 'dashboard:dashboard_messages' %}"
+       class="w-full flex items-center justify-center gap-2 bg-red-600 py-3 rounded-2xl font-semibold hover:bg-red-700 transition">
+
+        View All Messages →
+
+    </a>
 
 </div>
 
-<!-- CHART -->
-<div class="bg-white p-6 rounded-xl shadow">
+<!-- REVIEWS -->
+<!-- REVIEWS -->
+<div class="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-2xl hover:border-yellow-500/30 transition-all duration-300">
 
-    <canvas id="orderChart"></canvas>
+    <div class="flex items-center justify-between mb-5">
+
+        <div>
+            <h3 class="text-2xl font-black">
+                ⭐ Customer Reviews
+            </h3>
+
+            <p class="text-gray-400 mt-1">
+                Manage customer ratings and feedback
+            </p>
+        </div>
+
+        <div class="w-14 h-14 rounded-2xl bg-yellow-500 flex items-center justify-center text-2xl">
+            ⭐
+        </div>
+
+    </div>
+
+    <div class="bg-white/5 rounded-2xl p-6 text-center mb-6">
+
+        <p class="text-gray-400 text-sm">
+            Total Reviews
+        </p>
+
+        <h4 class="text-5xl font-black text-yellow-400 mt-2">
+            {{ total_reviews }}
+        </h4>
+
+    </div>
+
+    <a href="{% url 'dashboard:dashboard_reviews' %}"
+       class="w-full flex items-center justify-center gap-2 bg-yellow-500 text-black py-3 rounded-2xl font-semibold hover:bg-yellow-400 transition">
+
+        View All Reviews →
+    </a>
 
 </div>
 
-<script>
-const ctx = document.getElementById('orderChart');
 
-new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: {{ chart_labels|safe }},
-        datasets: [{
-            label: 'Orders',
-            data: {{ chart_data|safe }},
-            backgroundColor: '#ef4444'
-        }]
-    }
-});
-</script>
+        </div>
+
+    </main>
+
+</div>
+
+</div>
 
 {% endblock %}
+
+
+

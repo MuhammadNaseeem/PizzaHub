@@ -81,7 +81,7 @@ def contact(request):
             message=message
         )
 
-        # 📧 send email to admin
+        # 📧 Send email to admin
         send_mail(
             subject=f"Contact: {subject}",
             message=message,
@@ -90,7 +90,7 @@ def contact(request):
             fail_silently=False,
         )
 
-        # 🧾 log email
+        # 🧾 Log email
         EmailLog.objects.create(
             email=email,
             subject=subject,
@@ -99,10 +99,11 @@ def contact(request):
         )
 
         messages.success(request, "Message sent successfully!")
-        return redirect('contact')
+
+        # Redirect back to contact page
+        return redirect('core:contact')
 
     return render(request, 'core/contact.html')
-
 
 # =====================================================
 # FAQ PAGE
@@ -152,10 +153,5 @@ def test_email(request):
 # python manage.py startapp dashboard
 
 
-# Category
-# Product
-# ProductImage
-# Size
-# Topping
-# Crust
-# Deal
+
+# cd ~/PizzaHub
