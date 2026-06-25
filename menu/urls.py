@@ -19,7 +19,11 @@ urlpatterns = [
     path('featured/', views.featured_products, name='featured_products'),
 
     path('promotions/', views.promotions, name='promotions'),
-    path('promotion/<int:pk>/', views.promotion_detail, name='promotion_detail'),
+    path(
+    'promotion/<int:pk>/',
+    views.promotion_detail,
+    name='promotion_detail'
+),
     path(
     'promotion/<int:pk>/add-to-cart/',
     views.add_promotion_to_cart,
