@@ -154,4 +154,19 @@ def test_email(request):
 
 
 
+# for deleting, rm -rf ~/PizzaHub
+
 # cd ~/PizzaHub
+# ls
+# https://github.com/MuhammadNaseeem/PizzaHub.git
+# workon pizzahubenv
+# mkvirtualenv --python=/usr/bin/python3.13 pizzahubenv
+# pip install -r requirements.txt
+# nano .env
+# python manage.py migrate
+# mkdir -p ~/PizzaHub/static
+
+
+
+# for generating new secret key
+# python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
