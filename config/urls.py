@@ -22,7 +22,6 @@ urlpatterns = [
 
     path('orders/', include('orders.urls')),
 
-    path('coupons/', include('coupons.urls')),
     
 ]
 

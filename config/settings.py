@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'cart',
     'deals',
     'orders',
-    'coupons',
+
 
 
     "admin_interface",
