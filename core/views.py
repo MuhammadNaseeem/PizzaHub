@@ -167,6 +167,15 @@ def test_email(request):
 # mkdir -p ~/PizzaHub/static
 
 
+# on pythonanywhere
+# rm db.sqlite3
+# cp db.sqlite3 db.sqlite3.backup
+# ls -lh db.sqlite3
+
+# for images 
+#  "C:\Users\Muhammad Naseem\Desktop\ECOM-PIZZA\db.sqlite3" muhammadnaseem@ssh.pythonanywhere.com:/home/muhammadnaseem/PizzaHub/
+# scp -r "C:\Users\Muhammad Naseem\Desktop\ECOM-PIZZA\customization" muhammadnaseem@ssh.pythonanywhere.com:/home/muhammadnaseem/PizzaHub/media/
+
 
 # for generating new secret key
 # python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
